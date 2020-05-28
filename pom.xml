@@ -10,6 +10,7 @@
   <modules>
     <module>netty-example</module>
     <module>tomcat-servlet-example</module>
+    <module>tomee-cdi-example</module>
   </modules>
   <packaging>pom</packaging>
 
