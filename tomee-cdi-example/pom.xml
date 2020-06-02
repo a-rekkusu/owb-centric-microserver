@@ -21,17 +21,14 @@
         </dependency>
     </dependencies>
 
+
     <build>
         <finalName>tomee-cdi-example</finalName>
         <plugins>
             <plugin>
-                <groupId>org.apache.openejb.maven</groupId>
-                <artifactId>tomee-maven-plugin</artifactId>
-                <version>1.7.5</version>
-                <configuration>
-                    <tomeeVersion>1.7.5</tomeeVersion>
-                    <tomeeClassifier>plus</tomeeClassifier>
-                </configuration>
+                <groupId>org.apache.tomee.maven</groupId>
+                <artifactId>tomee-embedded-maven-plugin</artifactId>
+                <version>8.0.2</version>
             </plugin>
         </plugins>
     </build>
