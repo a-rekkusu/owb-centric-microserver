@@ -15,11 +15,11 @@ public class User implements Serializable
 
     @PostConstruct
     public void init(){
-        System.out.println("Post Construct was called!");
+        System.out.println("User Post Construct was called!");
     }
 
     @PreDestroy
     public void destroy(){
-        System.out.println("Pre Destroy was called!");
+        System.out.println("User Pre Destroy was called!");
     }
 }

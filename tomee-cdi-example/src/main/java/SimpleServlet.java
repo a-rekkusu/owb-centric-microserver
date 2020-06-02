@@ -1,5 +1,3 @@
-import jdk.nashorn.internal.runtime.logging.Logger;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -17,6 +15,9 @@ public class SimpleServlet extends HttpServlet
     @Inject
     private User user;
 
+    @Inject
+    private TestBean testBean;
+
     public void init() throws ServletException
     {
         //do nothing
@@ -30,10 +31,12 @@ public class SimpleServlet extends HttpServlet
 
         // Actual logic goes here.
         PrintWriter out = response.getWriter();
+        testBean.getTestString();
         out.println("<h1>" + user.getMyName() + "</h1>");
     }
 
-    public void destroy() {
+    public void destroy()
+    {
         // do nothing.
     }
 
