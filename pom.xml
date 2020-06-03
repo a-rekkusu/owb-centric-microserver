@@ -11,6 +11,7 @@
     <module>netty-example</module>
     <module>tomcat-servlet-example</module>
     <module>tomee-cdi-example</module>
+      <module>owb-console-app</module>
   </modules>
   <packaging>pom</packaging>
 
