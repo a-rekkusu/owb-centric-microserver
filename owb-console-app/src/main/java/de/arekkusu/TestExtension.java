@@ -1,5 +1,7 @@
 package de.arekkusu;
 
+import de.arekkusu.bindings.TestQualifier;
+
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterDeploymentValidation;
 import javax.enterprise.inject.spi.Extension;

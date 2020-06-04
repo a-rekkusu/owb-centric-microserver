@@ -1,4 +1,4 @@
-package de.arekkusu;
+package de.arekkusu.bindings;
 
 import javax.inject.Qualifier;
 
