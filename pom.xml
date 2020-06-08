@@ -12,6 +12,7 @@
     <module>tomcat-servlet-example</module>
     <module>tomee-cdi-example</module>
       <module>owb-console-app</module>
+      <module>api</module>
   </modules>
   <packaging>pom</packaging>
 

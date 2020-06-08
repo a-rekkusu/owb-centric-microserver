@@ -1,0 +1,22 @@
+package bindings;
+
+import enums.Matching;
+import enums.Method;
+
+import javax.inject.Named;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import static java.lang.annotation.ElementType.*;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+@Named
+@Retention(RUNTIME)
+@Target({TYPE})
+public @interface HttpHandler
+{
+    String url();
+    Method[] method();
+    Matching[] matching();
+}

@@ -1,4 +1,4 @@
-package nettyServer;
+package nettyComponents;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
@@ -8,11 +8,10 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
 
-import java.awt.*;
-import java.io.FileReader;
+import javax.inject.Named;
 import java.io.IOException;
-import java.net.URL;
 
+@Named
 public class HelloWorldServerHandler extends SimpleChannelInboundHandler<HttpObject>
 {
     public HelloWorldServerHandler()
