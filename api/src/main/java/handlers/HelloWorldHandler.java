@@ -1,11 +1,11 @@
 package handlers;
 
-import bindings.HttpHandler;
-import bindings.Request;
-import bindings.Response;
-import bindings.Servlet;
-import enums.Matching;
-import enums.Method;
+import api.HttpHandler;
+import api.Request;
+import api.Response;
+import api.Servlet;
+import api.Matching;
+import api.Method;
 
 import javax.inject.Named;
 

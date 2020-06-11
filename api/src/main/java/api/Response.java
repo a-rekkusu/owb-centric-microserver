@@ -1,4 +1,4 @@
-package bindings;
+package api;
 
 import javax.inject.Named;
 import java.io.IOException;

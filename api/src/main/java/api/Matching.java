@@ -1,4 +1,4 @@
-package enums;
+package api;
 
 public enum Matching
 {

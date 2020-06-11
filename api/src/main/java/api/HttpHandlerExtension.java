@@ -1,4 +1,4 @@
-package bindings;
+package api;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.*;

@@ -1,5 +1,5 @@
-import bindings.Request;
-import bindings.Response;
+import api.Request;
+import api.Response;
 import handlers.HelloWorldHandler;
 import org.apache.webbeans.config.WebBeansContext;
 import org.apache.webbeans.spi.ContainerLifecycle;

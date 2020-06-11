@@ -1,7 +1,4 @@
-package bindings;
-
-import enums.Matching;
-import enums.Method;
+package api;
 
 import javax.inject.Qualifier;
 
