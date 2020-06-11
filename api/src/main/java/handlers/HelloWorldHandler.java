@@ -1,21 +1,24 @@
 package handlers;
 
 import bindings.HttpHandler;
+import bindings.Request;
+import bindings.Response;
+import bindings.Servlet;
 import enums.Matching;
 import enums.Method;
-import nettyComponents.HelloWorldServer;
 
-import javax.inject.Inject;
+import javax.inject.Named;
 
+@Named
 @HttpHandler(method = {Method.GET, Method.POST}, url = "/hello", matching = Matching.EXACT)
-public class HelloWorldHandler
+public class HelloWorldHandler extends Servlet
 {
-    HelloWorldServer server;
-
-    @Inject
-    HelloWorldHandler() {
-        this.server = new HelloWorldServer();
+    public HelloWorldHandler() {
     }
 
-
+    @Override
+    public void doGet(Request request, Response response)
+    {
+        super.doGet(request, response);
+    }
 }

@@ -3,7 +3,7 @@ package bindings;
 import enums.Matching;
 import enums.Method;
 
-import javax.inject.Named;
+import javax.inject.Qualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-@Named
+@Qualifier
 @Retention(RUNTIME)
 @Target({TYPE})
 public @interface HttpHandler
