@@ -1,10 +1,9 @@
 package api;
 
-import javax.ws.rs.HttpMethod;
 
 public class Request
 {
-    public String getMethod()
+    public HttpMethod getMethod()
     {
         return HttpMethod.GET;
     }

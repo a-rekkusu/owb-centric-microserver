@@ -1,13 +1,11 @@
 package showcase;
 
-import api.HttpHandler;
-import api.HttpMethodHandler;
-import api.Request;
-import api.Response;
+import api.*;
 
+import static api.HttpMethod.POST;
 import static api.Matching.EXACT;
-import static javax.ws.rs.HttpMethod.GET;
-import static javax.ws.rs.HttpMethod.POST;
+import static api.HttpMethod.GET;
+
 
 @HttpHandler(method = {GET, POST}, url = "/hello", matching = EXACT)
 public class HelloWorldHandler extends HttpMethodHandler
