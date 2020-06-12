@@ -12,5 +12,3 @@ public enum HttpMethod
     PATCH,
     CONNECT
 }
-
-

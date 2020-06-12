@@ -2,10 +2,9 @@ package showcase;
 
 import api.*;
 
-import static api.HttpMethod.POST;
 import static api.Matching.EXACT;
 import static api.HttpMethod.GET;
-
+import static api.HttpMethod.POST;
 
 @HttpHandler(method = {GET, POST}, url = "/hello", matching = EXACT)
 public class HelloWorldHandler extends HttpMethodHandler
