@@ -1,7 +1,6 @@
 package api;
 
-import com.sun.mail.iap.ByteArray;
-
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -39,7 +38,7 @@ public class Response
 
     }
 
-    public void write(ByteArray byteArray)
+    public void write(ByteArrayInputStream byteArray)
     {
 
     }
