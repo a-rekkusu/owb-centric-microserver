@@ -1,23 +1,26 @@
 package api;
 
-import javax.inject.Named;
+import javax.ws.rs.HttpMethod;
 
-@Named
-public class Request extends Servlet
+public class Request
 {
-    public String getMethod(){
-        return "";
+    public String getMethod()
+    {
+        return HttpMethod.GET;
     }
 
-    public boolean urlMatchingFound(String url){
+    public boolean urlMatchingFound(String url)
+    {
         return true;
     }
 
-    public String getParameter(String parameter){
+    public String getParameter(String parameter)
+    {
         return "";
     }
 
-    public String getHeader(){
+    public String getHeader()
+    {
         return "";
     }
 

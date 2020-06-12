@@ -1,23 +1,26 @@
 package api;
 
-import javax.inject.Named;
+import com.sun.mail.iap.ByteArray;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@Named
-public class Response extends Servlet
+public class Response
 {
     private PrintWriter writer;
 
     public void setContentType(String contentType)
     {
+
     }
 
     public void setCharacterEncoding(String encoding)
     {
+
     }
 
-    public void setContentLength(int contentLength){
+    public void setContentLength(int contentLength)
+    {
 
     }
 
@@ -28,6 +31,17 @@ public class Response extends Servlet
 
     public void write(PrintWriter writer)
     {
+
+    }
+
+    public void write(String string)
+    {
+
+    }
+
+    public void write(ByteArray byteArray)
+    {
+
     }
 
 }

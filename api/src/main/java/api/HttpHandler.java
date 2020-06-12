@@ -14,6 +14,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface HttpHandler
 {
     String url();
-    Method[] method();
+    String[] method();
     Matching[] matching();
 }
