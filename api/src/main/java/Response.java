@@ -43,11 +43,13 @@ public class Response
 
     }
 
-    public CompletionStage<Response> onRequest(Request req) {
-        return new CompletableFuture<Response>();
+    public CompletionStage<Response> onRequest(Request req)
+    {
+        return CompletableFuture.supplyAsync(() -> new Response());
     }
 
-    public Response onRequ(Request req) {
+    public Response onReq(Request req)
+    {
         return this;
     }
 

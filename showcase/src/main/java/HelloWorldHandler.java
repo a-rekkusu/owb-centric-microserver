@@ -6,6 +6,6 @@ public class HelloWorldHandler extends HttpMethodHandler
 
     public void helloWorld(Request req, Response resp)
     {
-        handleHttpMethod(req.getMethod(), req, resp);
+        processHttpRequest(req.getMethod(), req, resp);
     }
 }
