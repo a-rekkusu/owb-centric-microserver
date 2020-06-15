@@ -1,5 +1,3 @@
-package api;
-
 public class Request
 {
     public HttpMethod getMethod()

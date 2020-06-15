@@ -1,12 +1,4 @@
-package showcase;
-
-import api.*;
-
-import static api.Matching.EXACT;
-import static api.HttpMethod.GET;
-import static api.HttpMethod.POST;
-
-@HttpHandler(method = {GET, POST}, url = "/hello", matching = EXACT)
+@HttpHandler(method = {HttpMethod.GET, HttpMethod.POST}, url = "/hello", matching = Matching.EXACT)
 public class HelloWorldHandler extends HttpMethodHandler
 {
     public HelloWorldHandler() {

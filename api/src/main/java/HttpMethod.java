@@ -1,5 +1,3 @@
-package api;
-
 public enum HttpMethod
 {
     GET,
