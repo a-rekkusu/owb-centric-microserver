@@ -3,6 +3,8 @@ package api;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class Response
 {
@@ -41,6 +43,14 @@ public class Response
     public void write(ByteArrayInputStream byteArray)
     {
 
+    }
+
+    public CompletionStage<Response> onRequest(Request req) {
+        return new CompletableFuture<Response>();
+    }
+
+    public Response onRequ(Request req) {
+        return this;
     }
 
 }
