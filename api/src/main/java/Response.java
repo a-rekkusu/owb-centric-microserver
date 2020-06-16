@@ -1,8 +1,6 @@
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 
 public class Response
 {
@@ -19,6 +17,11 @@ public class Response
     }
 
     public void setContentLength(int contentLength)
+    {
+
+    }
+
+    public void setStatus(int statusCode)
     {
 
     }
@@ -42,15 +45,4 @@ public class Response
     {
 
     }
-
-    public CompletionStage<Response> onRequest(Request req)
-    {
-        return CompletableFuture.supplyAsync(() -> new Response());
-    }
-
-    public Response onReq(Request req)
-    {
-        return this;
-    }
-
 }
