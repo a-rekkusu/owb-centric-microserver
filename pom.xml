@@ -4,8 +4,8 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>de.arekkusu</groupId>
-  <artifactId>owb-centric-microserver</artifactId>
+  <groupId>org.apache.peeco</groupId>
+  <artifactId>peeco</artifactId>
   <version>1.0-SNAPSHOT</version>
   <modules>
     <module>api</module>
@@ -14,7 +14,7 @@
   </modules>
   <packaging>pom</packaging>
 
-  <name>owb-centric-microserver Maven Webapp</name>
+  <name>peeco</name>
   <url>https://github.com/a-rekkusu/owb-centric-microserver</url>
 
   <properties>
