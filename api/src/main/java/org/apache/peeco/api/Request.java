@@ -1,25 +1,43 @@
 package org.apache.peeco.api;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 
 public class Request
 {
+    private InputStream inputStream;
+    private HashMap<String, String> headers;
+    private HashMap<String, String> parameters;
+
+    public Request(InputStream stream)
+    {
+        this.inputStream = stream;
+        this.headers = new HashMap<String, String>();
+        this.parameters = new HashMap<String, String>();
+    }
+
+    public InputStream inputStream()
+    {
+        return inputStream;
+    }
+
+    public HashMap<String, String> headers()
+    {
+        return headers;
+    }
+
+    public HashMap<String, String> parameters()
+    {
+        return parameters;
+    }
+
     public HttpMethod httpMethod()
     {
         return HttpMethod.GET;
     }
 
-    public HashMap<String, String> headers(){
-        return new HashMap<String, String>();
-    }
-
-    public HashMap<String, String> parameters(){
-        return new HashMap<String, String>();
-    }
-
-    public String url(){
+    public String url()
+    {
         return "";
     }
 
@@ -28,14 +46,4 @@ public class Request
         return true;
     }
 
-    public InputStream getPayload(){
-        return new InputStream()
-        {
-            @Override
-            public int read() throws IOException
-            {
-                return 0;
-            }
-        };
-    }
 }

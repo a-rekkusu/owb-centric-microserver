@@ -81,12 +81,12 @@
       <version>4.1.50.Final</version>
       <scope>compile</scope>
     </dependency>
-    <!--        <dependency>
+            <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-example</artifactId>
             <version>4.1.50.Final</version>
             <scope>compile</scope>
-        </dependency>-->
+        </dependency>
   </dependencies>
 
   <build>

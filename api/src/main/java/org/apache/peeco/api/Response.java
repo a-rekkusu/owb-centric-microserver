@@ -1,36 +1,26 @@
 package org.apache.peeco.api;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import java.io.OutputStream;
 import java.util.HashMap;
 
 public class Response
 {
-    private PrintWriter writer;
+    private OutputStream outputStream;
+    private HashMap<String, String> headers;
+
+    public Response(OutputStream stream)
+    {
+        this.outputStream = stream;
+        this.headers = new HashMap<String, String>();
+    }
+
+    public OutputStream outputStream()
+    {
+        return outputStream;
+    }
 
     public HashMap<String, String> headers()
     {
-        return new HashMap<String, String>();
-    }
-
-    public void setPayload(InputStream stream)
-    {
-
-    }
-
-    public PrintWriter getWriter() throws IOException
-    {
-        return writer;
-    }
-
-    public void write(PrintWriter writer)
-    {
-
-    }
-
-    public void write(String string)
-    {
-
+        return headers;
     }
 }
