@@ -1,4 +1,4 @@
-package org.apache.peco.showcase;
+package org.apache.peeco.showcase;
 
 import org.apache.peeco.api.HttpHandler;
 import org.apache.peeco.api.Matching;
