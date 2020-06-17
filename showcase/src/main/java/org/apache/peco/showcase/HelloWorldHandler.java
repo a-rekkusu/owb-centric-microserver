@@ -1,6 +1,8 @@
-package handlers;
+package org.apache.peco.showcase;
 
-import api.*;
+import org.apache.peeco.api.HttpHandler;
+import org.apache.peeco.api.Matching;
+import org.apache.peeco.api.*;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -13,7 +15,7 @@ public class HelloWorldHandler
         return CompletableFuture.supplyAsync(() ->
         {
             Response response = new Response();
-            response.setStatusCode(200);
+            response.headers().put("statusCode", "200");
             response.write("Hello World from " + getClass().getName());
             return response;
         });
@@ -23,7 +25,7 @@ public class HelloWorldHandler
     public Response applyWithoutCompletionStage(Request request)
     {
         Response response = new Response();
-        response.setStatusCode(200);
+        response.headers().put("statusCode", "200");
         response.write("Hello World from " + getClass().getName());
         return response;
     }

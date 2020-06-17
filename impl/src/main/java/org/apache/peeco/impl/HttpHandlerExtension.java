@@ -1,7 +1,6 @@
-package impl;
+package org.apache.peeco.impl;
 
-import api.HttpHandler;
-
+import org.apache.peeco.api.HttpHandler;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.*;
 import java.util.ArrayList;

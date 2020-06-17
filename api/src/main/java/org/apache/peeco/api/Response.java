@@ -1,18 +1,23 @@
-package api;
+package org.apache.peeco.api;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.HashMap;
 
-public class Response extends Header
+public class Response
 {
     private PrintWriter writer;
 
-    public void setPayload(InputStream stream){
-
+    public HashMap<String, String> headers()
+    {
+        return new HashMap<String, String>();
     }
 
-    //TOTO setPayload(ReactiveStream)
+    public void setPayload(InputStream stream)
+    {
+
+    }
 
     public PrintWriter getWriter() throws IOException
     {

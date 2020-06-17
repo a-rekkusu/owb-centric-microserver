@@ -1,4 +1,4 @@
-package api;
+package org.apache.peeco.api;
 
 public enum Matching
 {

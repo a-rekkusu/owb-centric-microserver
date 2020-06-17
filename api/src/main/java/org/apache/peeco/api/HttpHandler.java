@@ -1,4 +1,4 @@
-package api;
+package org.apache.peeco.api;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
