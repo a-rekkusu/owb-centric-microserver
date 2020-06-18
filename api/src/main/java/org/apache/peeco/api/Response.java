@@ -9,9 +9,15 @@ public class Response
     private ByteArrayOutputStream outputStream;
     private HashMap<String, String> headers;
 
-    public Response(ByteArrayOutputStream outputStream)
+    public Response()
     {
-        this.outputStream = outputStream;
+        outputStream = new ByteArrayOutputStream();
+        this.headers = new HashMap<String, String>();
+    }
+
+    public Response(int outputStreamSize)
+    {
+        this.outputStream = new ByteArrayOutputStream(outputStreamSize);
         this.headers = new HashMap<String, String>();
     }
 
