@@ -5,15 +5,29 @@ import java.util.HashMap;
 
 public class Request
 {
+    private HttpMethod httpMethod;
+    private String url;
     private InputStream inputStream;
     private HashMap<String, String> headers;
     private HashMap<String, String> parameters;
 
-    public Request(InputStream stream)
+    public Request(HttpMethod httpMethod, String url, InputStream stream)
     {
+        this.httpMethod = httpMethod;
+        this.url = url;
         this.inputStream = stream;
         this.headers = new HashMap<String, String>();
         this.parameters = new HashMap<String, String>();
+    }
+
+    public HttpMethod httpMethod()
+    {
+        return httpMethod;
+    }
+
+    public String url()
+    {
+        return url;
     }
 
     public InputStream inputStream()
@@ -31,19 +45,5 @@ public class Request
         return parameters;
     }
 
-    public HttpMethod httpMethod()
-    {
-        return HttpMethod.GET;
-    }
-
-    public String url()
-    {
-        return "";
-    }
-
-    public boolean urlMatchingFound(String url)
-    {
-        return true;
-    }
 
 }
