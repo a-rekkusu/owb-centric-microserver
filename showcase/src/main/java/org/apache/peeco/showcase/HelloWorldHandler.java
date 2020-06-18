@@ -8,6 +8,8 @@ import javax.enterprise.context.ApplicationScoped;
 import java.io.IOException;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
@@ -18,11 +20,12 @@ public class HelloWorldHandler
     public CompletionStage<Response> apply(Request request)
     {
         String responseContent = "Hello World from " + getClass().getName();
+        ArrayList<String> statusCodeValues = new  ArrayList<String>(Arrays.asList("200"));
 
         return CompletableFuture.supplyAsync(() ->
         {
             Response response = new Response();
-            response.headers().put("statusCode", "200");
+            response.headers().put("statusCode", statusCodeValues);
 
             try
             {
@@ -40,9 +43,10 @@ public class HelloWorldHandler
     public Response applyWithoutCompletionStage(Request request) throws IOException
     {
         String responseContent = "Hello World from " + getClass().getName();
+        ArrayList<String> statusCodeValues = new  ArrayList<String>(Arrays.asList("200"));
 
         Response response = new Response(50);
-        response.headers().put("statusCode", "200");
+        response.headers().put("statusCode", statusCodeValues);
         response.outputStream().write(responseContent.getBytes(StandardCharsets.UTF_8));
         return response;
     }

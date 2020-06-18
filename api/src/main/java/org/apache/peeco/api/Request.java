@@ -1,23 +1,29 @@
 package org.apache.peeco.api;
 
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class Request
 {
     private HttpMethod httpMethod;
     private String url;
     private InputStream inputStream;
-    private HashMap<String, String> headers;
-    private HashMap<String, String> parameters;
+    private Map<String, List<String>> headers;
+    private Map<String, List<String>> parameters;
+    private Map<String, List<String>> bodyParameters;
+    private Map<String, List<String>> queryParameters;
 
     public Request(HttpMethod httpMethod, String url, InputStream stream)
     {
         this.httpMethod = httpMethod;
         this.url = url;
         this.inputStream = stream;
-        this.headers = new HashMap<String, String>();
-        this.parameters = new HashMap<String, String>();
+        this.headers = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+        this.parameters = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+        this.bodyParameters = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+        this.queryParameters = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
     }
 
     public HttpMethod httpMethod()
@@ -35,15 +41,25 @@ public class Request
         return inputStream;
     }
 
-    public HashMap<String, String> headers()
+    public Map<String, List<String>> headers()
     {
         return headers;
     }
 
-    public HashMap<String, String> parameters()
+    public Map<String, List<String>> parameters()
     {
+        bodyParameters().forEach((s, strings) -> parameters.put(s, strings));
+        queryParameters().forEach((s, strings) -> parameters.put(s, strings));
         return parameters;
     }
 
+    public Map<String, List<String>> bodyParameters()
+    {
+        return bodyParameters;
+    }
 
+    public Map<String, List<String>> queryParameters()
+    {
+        return queryParameters;
+    }
 }

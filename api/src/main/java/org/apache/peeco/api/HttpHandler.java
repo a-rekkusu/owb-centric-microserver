@@ -12,5 +12,5 @@ public @interface HttpHandler
 {
     String url();
     HttpMethod[] method();
-    Matching[] matching();
+    Matching matching();
 }
