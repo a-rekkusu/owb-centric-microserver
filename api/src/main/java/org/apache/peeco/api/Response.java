@@ -1,20 +1,21 @@
 package org.apache.peeco.api;
 
-import java.io.OutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 
 public class Response
 {
-    private OutputStream outputStream;
+    private ByteArrayOutputStream outputStream;
     private HashMap<String, String> headers;
 
-    public Response(OutputStream stream)
+    public Response(ByteArrayOutputStream outputStream)
     {
-        this.outputStream = stream;
+        this.outputStream = outputStream;
         this.headers = new HashMap<String, String>();
     }
 
-    public OutputStream outputStream()
+    public ByteArrayOutputStream outputStream()
     {
         return outputStream;
     }
@@ -22,5 +23,10 @@ public class Response
     public HashMap<String, String> headers()
     {
         return headers;
+    }
+
+    public ByteArrayInputStream toInputStream(ByteArrayOutputStream outputStream)
+    {
+        return new ByteArrayInputStream(outputStream.toByteArray());
     }
 }
