@@ -5,6 +5,7 @@ import org.apache.peeco.api.Matching;
 import org.apache.peeco.api.*;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
 import java.nio.charset.StandardCharsets;
@@ -20,20 +21,16 @@ public class HelloWorldHandler
     public CompletionStage<Response> apply(Request request)
     {
         String responseContent = "Hello World from " + getClass().getName();
-        ArrayList<String> statusCodeValues = new  ArrayList<String>(Arrays.asList("200"));
+        ArrayList<String> statusCodeValues = new  ArrayList<>(Arrays.asList("200"));
+        ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
 
         return CompletableFuture.supplyAsync(() ->
         {
             Response response = new Response();
             response.headers().put("statusCode", statusCodeValues);
-
-            try
-            {
-                response.outputStream().write(responseContent.getBytes(StandardCharsets.UTF_8));
-            } catch (IOException e)
-            {
-                e.printStackTrace();
-            }
+            response.setOutput(output);
+            //OR as setOutput(String):
+            //response.setOutput(responseContent);
 
             return response;
         });
@@ -43,11 +40,12 @@ public class HelloWorldHandler
     public Response applyWithoutCompletionStage(Request request) throws IOException
     {
         String responseContent = "Hello World from " + getClass().getName();
-        ArrayList<String> statusCodeValues = new  ArrayList<String>(Arrays.asList("200"));
+        ArrayList<String> statusCodeValues = new  ArrayList<>(Arrays.asList("200"));
+        ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
 
-        Response response = new Response(50);
+        Response response = new Response(output);
         response.headers().put("statusCode", statusCodeValues);
-        response.outputStream().write(responseContent.getBytes(StandardCharsets.UTF_8));
+
         return response;
     }
 }

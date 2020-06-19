@@ -1,29 +1,23 @@
 package org.apache.peeco.api;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.util.*;
 
 public class Response
 {
-    private ByteArrayOutputStream outputStream;
+    private ByteArrayInputStream output;
     private Map<String, List<String>> headers;
 
     public Response()
     {
-        outputStream = new ByteArrayOutputStream();
-        this.headers = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+        this.output = new ByteArrayInputStream(new byte[0]);
+        this.headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     }
 
-    public Response(int outputStreamSize)
+    public Response(ByteArrayInputStream output)
     {
-        this.outputStream = new ByteArrayOutputStream(outputStreamSize);
-        this.headers = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
-    }
-
-    public ByteArrayOutputStream outputStream()
-    {
-        return outputStream;
+        this.output = output;
+        this.headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     }
 
     public Map<String, List<String>> headers()
@@ -31,9 +25,9 @@ public class Response
         return headers;
     }
 
-    public ByteArrayInputStream toInputStream(ByteArrayOutputStream outputStream)
+    public ByteArrayInputStream output()
     {
-        return new ByteArrayInputStream(outputStream.toByteArray());
+        return output;
     }
 
     public void setOutput(ByteArrayInputStream stream)
@@ -43,7 +37,7 @@ public class Response
 
     public void setOutput(String output)
     {
-        headers().put("content-length", new ArrayList<String>(Arrays.asList(String.valueOf(output.length()))));
+        headers().put("content-length", new ArrayList<>(Arrays.asList(String.valueOf(output.length()))));
         setOutput(new ByteArrayInputStream(output.getBytes()));
     }
 }

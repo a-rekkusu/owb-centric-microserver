@@ -11,7 +11,6 @@ public class Request
     private String url;
     private InputStream inputStream;
     private Map<String, List<String>> headers;
-    private Map<String, List<String>> parameters;
     private Map<String, List<String>> bodyParameters;
     private Map<String, List<String>> queryParameters;
 
@@ -20,10 +19,9 @@ public class Request
         this.httpMethod = httpMethod;
         this.url = url;
         this.inputStream = stream;
-        this.headers = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
-        this.parameters = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
-        this.bodyParameters = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
-        this.queryParameters = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+        this.headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        this.bodyParameters = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        this.queryParameters = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     }
 
     public HttpMethod httpMethod()
@@ -48,8 +46,16 @@ public class Request
 
     public Map<String, List<String>> parameters()
     {
-        bodyParameters().forEach((s, strings) -> parameters.put(s, strings));
-        queryParameters().forEach((s, strings) -> parameters.put(s, strings));
+        Map<String, List<String>> parameters = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+        parameters.putAll(queryParameters());
+
+        bodyParameters().forEach((s, strings) ->
+                parameters.merge(s, strings, (strings1, strings2) ->
+                {
+                    strings1.addAll(strings2);
+                    return strings1;
+                }));
+
         return parameters;
     }
 
