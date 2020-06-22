@@ -1,6 +1,7 @@
 package org.apache.peeco.api;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.*;
 
 public class Response
@@ -30,7 +31,7 @@ public class Response
         return output;
     }
 
-    public void setOutput(ByteArrayInputStream stream)
+    public void setOutput(InputStream stream)
     {
 
     }
