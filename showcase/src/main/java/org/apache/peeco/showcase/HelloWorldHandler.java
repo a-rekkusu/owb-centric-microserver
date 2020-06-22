@@ -3,6 +3,9 @@ package org.apache.peeco.showcase;
 import org.apache.peeco.api.HttpHandler;
 import org.apache.peeco.api.Matching;
 import org.apache.peeco.api.*;
+import org.apache.webbeans.config.WebBeansContext;
+import org.apache.webbeans.spi.ContainerLifecycle;
+import org.junit.Test;
 
 import javax.enterprise.context.ApplicationScoped;
 import java.io.ByteArrayInputStream;
@@ -17,6 +20,8 @@ import java.util.concurrent.CompletionStage;
 @ApplicationScoped
 public class HelloWorldHandler
 {
+    private static ContainerLifecycle lifecycle = null;
+
     @HttpHandler(method = {HttpMethod.POST}, url = "/hello", matching = Matching.EXACT)
     public CompletionStage<Response> apply(Request request)
     {
@@ -47,5 +52,13 @@ public class HelloWorldHandler
         response.headers().put("statusCode", statusCodeValues);
 
         return response;
+    }
+
+    @Test
+    public void start()
+    {
+        lifecycle = WebBeansContext.currentInstance().getService(ContainerLifecycle.class);
+        lifecycle.startApplication(null);
+        lifecycle.stopApplication(null);
     }
 }
