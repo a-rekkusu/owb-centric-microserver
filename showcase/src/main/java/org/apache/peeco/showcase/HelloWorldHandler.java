@@ -8,6 +8,7 @@ import org.apache.webbeans.spi.ContainerLifecycle;
 import org.junit.Test;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
@@ -55,7 +56,8 @@ public class HelloWorldHandler
     }
 
     //test - diese methode darf von processAnnotatedType nicht berücksichtigt werden
-    public void noAnnotation()
+    @RequestScoped
+    public void noHandlerAnnotation()
     {
 
     }

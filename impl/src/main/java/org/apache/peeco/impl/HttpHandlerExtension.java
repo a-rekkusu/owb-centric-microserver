@@ -10,7 +10,7 @@ import java.util.*;
 
 public class HttpHandlerExtension implements Extension
 {
-    private static Map<String, Annotation> annotations = new HashMap<>();
+    private static List<HttpHandlerInfo> httpHandlerInfo = new ArrayList<>();
     private HttpServer server;
 
     <T> void processAnnotatedType(@Observes @WithAnnotations(HttpHandler.class) ProcessAnnotatedType<T> patEvent)
@@ -19,10 +19,8 @@ public class HttpHandlerExtension implements Extension
 
         getAnnotations(patEvent.getAnnotatedType().getJavaClass());
 
-        for(Map.Entry<String, Annotation> entry : annotations.entrySet()) {
-            String key = entry.getKey();
-            Annotation value = entry.getValue();
-            System.out.println("Key: " + key + ", Value: " + value.toString());
+        for(HttpHandlerInfo info : httpHandlerInfo) {
+            System.out.println("Class: " + info.clazz + ", Method: " + info.method + ", Annotation: " + info.annotation);
         }
     }
 
@@ -34,23 +32,21 @@ public class HttpHandlerExtension implements Extension
         server.bootstrap();
     }
 
-    public Map<String, Annotation> getAnnotations(Class clazz)
+    public List<HttpHandlerInfo> getAnnotations(Class clazz)
     {
         for (Method method : clazz.getDeclaredMethods())
         {
             Class type = method.getDeclaringClass();
-            String methodName = method.getName();
             Annotation[] allAnnotations = method.getDeclaredAnnotations();
 
-            for (Annotation a : allAnnotations)
+            for (Annotation annotation : allAnnotations)
             {
-                if (a.toString().contains("@org.apache.peeco.api.HttpHandler"))
+                if (annotation.toString().contains("@org.apache.peeco.api.HttpHandler"))
                 {
-                    annotations.put(type + "." + methodName, a);
+                    httpHandlerInfo.add(new HttpHandlerInfo(type, method, annotation));
                 }
             }
         }
-
-        return annotations;
+        return httpHandlerInfo;
     }
 }
