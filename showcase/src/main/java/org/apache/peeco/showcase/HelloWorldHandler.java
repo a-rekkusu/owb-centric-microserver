@@ -26,7 +26,7 @@ public class HelloWorldHandler
     public CompletionStage<Response> apply(Request request)
     {
         String responseContent = "Hello World from " + getClass().getName();
-        ArrayList<String> statusCodeValues = new  ArrayList<>(Arrays.asList("200"));
+        ArrayList<String> statusCodeValues = new ArrayList<>(Arrays.asList("200"));
         ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
 
         return CompletableFuture.supplyAsync(() ->
@@ -45,13 +45,19 @@ public class HelloWorldHandler
     public Response applyWithoutCompletionStage(Request request) throws IOException
     {
         String responseContent = "Hello World from " + getClass().getName();
-        ArrayList<String> statusCodeValues = new  ArrayList<>(Arrays.asList("200"));
+        ArrayList<String> statusCodeValues = new ArrayList<>(Arrays.asList("200"));
         ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
 
         Response response = new Response(output);
         response.headers().put("statusCode", statusCodeValues);
 
         return response;
+    }
+
+    //test - diese methode darf von processAnnotatedType nicht berücksichtigt werden
+    public void noAnnotation()
+    {
+
     }
 
     @Test

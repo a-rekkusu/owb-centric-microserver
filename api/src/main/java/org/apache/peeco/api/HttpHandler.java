@@ -7,7 +7,7 @@ import static java.lang.annotation.ElementType.*;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
-@Target({TYPE, METHOD})
+@Target({METHOD})
 public @interface HttpHandler
 {
     String url();
