@@ -12,22 +12,21 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 
-import java.util.ArrayList;
+import java.lang.reflect.Method;
+import java.util.List;
 
 public class HttpServer
 {
 
     static final boolean SSL = System.getProperty("ssl") != null;
     static final int PORT;
-    private static ArrayList<String> list;
+    private List<HttpHandlerInfo> httpHandlerInfos;
 
-    public HttpServer(ArrayList<String> list)
+
+
+    public HttpServer(List<HttpHandlerInfo> httpHandlerInfos)
     {
-        this.list = list;
-    }
-
-    public HttpServer(){
-
+        this.httpHandlerInfos = httpHandlerInfos;
     }
 
     public void bootstrap() throws Exception

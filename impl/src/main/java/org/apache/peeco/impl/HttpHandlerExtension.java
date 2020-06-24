@@ -10,7 +10,7 @@ import java.util.*;
 
 public class HttpHandlerExtension implements Extension
 {
-    private static List<HttpHandlerInfo> httpHandlerInfo = new ArrayList<>();
+    private static List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
     private HttpServer server;
 
     <T> void processAnnotatedType(@Observes @WithAnnotations(HttpHandler.class) ProcessAnnotatedType<T> patEvent)
@@ -19,7 +19,8 @@ public class HttpHandlerExtension implements Extension
 
         getAnnotations(patEvent.getAnnotatedType().getJavaClass());
 
-        for(HttpHandlerInfo info : httpHandlerInfo) {
+        for (HttpHandlerInfo info : httpHandlerInfos)
+        {
             System.out.println("Class: " + info.clazz + ", Method: " + info.method + ", Annotation: " + info.annotation);
         }
     }
@@ -28,7 +29,7 @@ public class HttpHandlerExtension implements Extension
     {
         //netty starten, http handler holen, url bei netty registrieren, handler reinhängen
         System.out.println("----AFTER DEPLOYMENT VALIDATION----");
-        server = new HttpServer();
+        server = new HttpServer(httpHandlerInfos);
         server.bootstrap();
     }
 
@@ -37,16 +38,14 @@ public class HttpHandlerExtension implements Extension
         for (Method method : clazz.getDeclaredMethods())
         {
             Class type = method.getDeclaringClass();
-            Annotation[] allAnnotations = method.getDeclaredAnnotations();
+            Annotation annotation = method.getAnnotation(HttpHandler.class);
+            AnnotationValues values = new AnnotationValues(
+                    method.getAnnotation(HttpHandler.class).method(),
+                    method.getAnnotation(HttpHandler.class).url(),
+                    method.getAnnotation(HttpHandler.class).matching());
 
-            for (Annotation annotation : allAnnotations)
-            {
-                if (annotation.toString().contains("@org.apache.peeco.api.HttpHandler"))
-                {
-                    httpHandlerInfo.add(new HttpHandlerInfo(type, method, annotation));
-                }
-            }
+            httpHandlerInfos.add(new HttpHandlerInfo(type, method, annotation, values));
         }
-        return httpHandlerInfo;
+        return httpHandlerInfos;
     }
 }
