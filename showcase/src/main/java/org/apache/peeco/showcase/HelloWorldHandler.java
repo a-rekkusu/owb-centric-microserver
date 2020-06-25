@@ -42,8 +42,8 @@ public class HelloWorldHandler
         });
     }
 
-    @HttpHandler(method = {HttpMethod.GET}, url = "/hello", matching = Matching.EXACT)
-    public Response applyWithoutCompletionStage(Request request) throws IOException
+    @HttpHandler(method = {HttpMethod.GET}, url = "/hello2", matching = Matching.EXACT)
+    public Response applyWithoutCompletionStage(Request request)
     {
         String responseContent = "Hello World from " + getClass().getName();
         ArrayList<String> statusCodeValues = new ArrayList<>(Arrays.asList("200"));

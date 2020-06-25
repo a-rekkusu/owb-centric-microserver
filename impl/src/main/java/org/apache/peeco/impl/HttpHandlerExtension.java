@@ -21,7 +21,10 @@ public class HttpHandlerExtension implements Extension
 
         for (HttpHandlerInfo info : httpHandlerInfos)
         {
-            System.out.println("Class: " + info.clazz + ", Method: " + info.method + ", Annotation: " + info.annotation);
+            System.out.println("Class: " + info.clazz +
+                    ", Method: " + info.method +
+                    ", Annotation: " + info.annotation +
+                    ", Annotation Values: " + info.values.url + ", " + Arrays.toString(info.values.httpMethod) + ", " + info.values.matching);
         }
     }
 
@@ -39,12 +42,14 @@ public class HttpHandlerExtension implements Extension
         {
             Class type = method.getDeclaringClass();
             Annotation annotation = method.getAnnotation(HttpHandler.class);
-            AnnotationValues values = new AnnotationValues(
-                    method.getAnnotation(HttpHandler.class).method(),
-                    method.getAnnotation(HttpHandler.class).url(),
-                    method.getAnnotation(HttpHandler.class).matching());
-
-            httpHandlerInfos.add(new HttpHandlerInfo(type, method, annotation, values));
+            if (annotation != null)
+            {
+                AnnotationValues values = new AnnotationValues(
+                        method.getAnnotation(HttpHandler.class).method(),
+                        method.getAnnotation(HttpHandler.class).url(),
+                        method.getAnnotation(HttpHandler.class).matching());
+                httpHandlerInfos.add(new HttpHandlerInfo(type, method, annotation, values));
+            }
         }
         return httpHandlerInfos;
     }

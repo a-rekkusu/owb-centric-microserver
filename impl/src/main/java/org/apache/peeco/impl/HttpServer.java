@@ -12,7 +12,8 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 
-import java.lang.reflect.Method;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import java.util.List;
 
 public class HttpServer
@@ -21,10 +22,9 @@ public class HttpServer
     static final boolean SSL = System.getProperty("ssl") != null;
     static final int PORT;
     private List<HttpHandlerInfo> httpHandlerInfos;
+    private BeanManager beanManager = CDI.current().getBeanManager();
 
-
-
-    public HttpServer(List<HttpHandlerInfo> httpHandlerInfos)
+    public HttpServer(List<HttpHandlerInfo> httpHandlerInfos) throws Exception
     {
         this.httpHandlerInfos = httpHandlerInfos;
     }
@@ -52,7 +52,7 @@ public class HttpServer
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new HttpServerInitializer(sslCtx));
-            Channel ch = b.bind(PORT).sync().channel();
+            Channel ch = b.bind(PORT ).sync().channel();
             System.err.println("Open your web browser and navigate to " + (SSL ? "https" : "http") + "://127.0.0.1:" + PORT + '/');
             ch.closeFuture().sync();
         } finally
@@ -65,6 +65,11 @@ public class HttpServer
     static
     {
         PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
+    }
+
+    public void registerHandlers(List<HttpHandlerInfo> httpHandlerInfos)
+    {
+
     }
 }
 
