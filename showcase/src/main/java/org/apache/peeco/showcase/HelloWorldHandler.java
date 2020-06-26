@@ -10,7 +10,6 @@ import org.junit.Test;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;

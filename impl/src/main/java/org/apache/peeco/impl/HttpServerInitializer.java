@@ -8,12 +8,16 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerExpectContinueHandler;
 import io.netty.handler.ssl.SslContext;
 
+import java.util.List;
+
 public class HttpServerInitializer extends ChannelInitializer<SocketChannel>
 {
     private final SslContext sslCtx;
+    private List<HttpHandlerInfo> httpHandlerInfos;
 
-    public HttpServerInitializer(SslContext sslCtx) {
+    public HttpServerInitializer(SslContext sslCtx, List<HttpHandlerInfo> httpHandlerInfos) {
         this.sslCtx = sslCtx;
+        this.httpHandlerInfos = httpHandlerInfos;
     }
 
     public void initChannel(SocketChannel ch) {
@@ -25,6 +29,6 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel>
         p.addLast(new HttpServerCodec());
         p.addLast(new HttpServerExpectContinueHandler());
         p.addLast("aggregator", new HttpObjectAggregator(Short.MAX_VALUE));
-        p.addLast(new HttpServerHandler());
+        p.addLast(new HttpServerHandler(httpHandlerInfos));
     }
 }

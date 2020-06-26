@@ -9,18 +9,82 @@ import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
 
 import java.io.IOException;
+import java.util.List;
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
 {
-    public HttpServerHandler()
+    public HttpServerHandler(List<HttpHandlerInfo> httpHandlerInfos)
     {
+        this.httpHandlerInfos = httpHandlerInfos;
     }
 
+    private List<HttpHandlerInfo> httpHandlerInfos;
     private final StringBuilder responseContent = new StringBuilder();
     private static final HttpDataFactory factory = new DefaultHttpDataFactory(16384L);
     private HttpPostRequestDecoder decoder;
     private HttpRequest request;
 
+    public void channelReadComplete(ChannelHandlerContext ctx)
+    {
+        ctx.flush();
+    }
+
+    public void channelRead0(ChannelHandlerContext ctx, HttpObject msg)
+    {
+        if (msg instanceof HttpRequest)
+        {
+            request = (HttpRequest) msg;
+
+            if (uri_matching(request))
+            {
+
+                //GET Response
+                if (request.method().equals(HttpMethod.GET))
+                {
+                    httpRequestLogger(request);
+
+                    FullHttpResponse response = new DefaultFullHttpResponse(
+                            request.protocolVersion(),
+                            HttpResponseStatus.OK,
+                            writeGetResponse(ctx));
+
+                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.TEXT_HTML)
+                            .setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+
+                    ChannelFuture f = ctx.write(response);
+                }
+
+                //POST Response
+                else if (request.method().equals(HttpMethod.POST))
+                {
+                    httpRequestLogger(request);
+
+                    FullHttpResponse response = new DefaultFullHttpResponse(
+                            request.protocolVersion(),
+                            HttpResponseStatus.OK,
+                            writePostResponse(ctx));
+
+                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.TEXT_PLAIN)
+                            .setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+
+                    ChannelFuture f = ctx.write(response);
+                }
+            }
+        }
+    }
+
+    public boolean uri_matching(HttpRequest request)
+    {
+        boolean uri_matching = false;
+        for (HttpHandlerInfo info : httpHandlerInfos)
+        {
+            if (request.uri().equals(info.values.url))
+            {
+                return true;
+            }
+        }
+        return uri_matching;
+    }
 
     private ByteBuf writePostResponse(ChannelHandlerContext ctx)
     {
@@ -76,56 +140,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
         return buffer;
     }
 
-    public void channelReadComplete(ChannelHandlerContext ctx)
-    {
-        ctx.flush();
-    }
-
-    public void channelRead0(ChannelHandlerContext ctx, HttpObject msg)
-    {
-
-        if (msg instanceof HttpRequest)
-        {
-            request = (HttpRequest) msg;
-
-            //GET Response
-            if (request.method().equals(HttpMethod.GET))
-            {
-                httpRequestLogger(request);
-
-                FullHttpResponse response = new DefaultFullHttpResponse(
-                        request.protocolVersion(),
-                        HttpResponseStatus.OK,
-                        writeGetResponse(ctx));
-
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.TEXT_HTML)
-                        .setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-
-                ChannelFuture f = ctx.write(response);
-            }
-
-            //POST Response
-            else if (request.method().equals(HttpMethod.POST))
-            {
-                httpRequestLogger(request);
-
-                FullHttpResponse response = new DefaultFullHttpResponse(
-                        request.protocolVersion(),
-                        HttpResponseStatus.OK,
-                        writePostResponse(ctx));
-
-                response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.TEXT_PLAIN)
-                        .setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-
-                ChannelFuture f = ctx.write(response);
-            }
-        }
-    }
-
     public void httpRequestLogger(HttpRequest req)
     {
         System.out.println("Request received:");
         System.out.println("HTTP Method: " + req.method());
+        System.out.println("URI: " + req.uri());
         System.out.println("HTTP Version: " + req.protocolVersion());
         System.out.println("Headers: " + req.headers());
     }
