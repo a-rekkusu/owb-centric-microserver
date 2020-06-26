@@ -72,7 +72,6 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
 
     public boolean uri_matching(HttpRequest request)
     {
-        boolean uri_matching = false;
         for (HttpHandlerInfo info : httpHandlerInfos)
         {
             if (request.uri().equals(info.values.url))
@@ -80,7 +79,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                 return true;
             }
         }
-        return uri_matching;
+        return false;
     }
 
     private ByteBuf writePostResponse(ChannelHandlerContext ctx)
