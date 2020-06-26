@@ -12,8 +12,6 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 
-import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
 import java.util.List;
 
 public class HttpServer
@@ -22,7 +20,6 @@ public class HttpServer
     static final boolean SSL = System.getProperty("ssl") != null;
     static final int PORT;
     private List<HttpHandlerInfo> httpHandlerInfos;
-    private BeanManager beanManager = CDI.current().getBeanManager();
 
     public HttpServer(List<HttpHandlerInfo> httpHandlerInfos) throws Exception
     {
@@ -65,11 +62,6 @@ public class HttpServer
     static
     {
         PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
-    }
-
-    public void registerHandlers(List<HttpHandlerInfo> httpHandlerInfos)
-    {
-
     }
 }
 

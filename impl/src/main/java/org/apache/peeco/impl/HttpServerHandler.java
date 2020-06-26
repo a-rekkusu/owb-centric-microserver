@@ -8,6 +8,8 @@ import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.*;
 import io.netty.util.CharsetUtil;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import java.io.IOException;
 import java.util.List;
 
@@ -23,6 +25,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
     private static final HttpDataFactory factory = new DefaultHttpDataFactory(16384L);
     private HttpPostRequestDecoder decoder;
     private HttpRequest request;
+    private BeanManager beanManager = CDI.current().getBeanManager();
 
     public void channelReadComplete(ChannelHandlerContext ctx)
     {
@@ -34,15 +37,12 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
         if (msg instanceof HttpRequest)
         {
             request = (HttpRequest) msg;
+            httpRequestLogger(request);
 
             if (uri_matching(request))
             {
-
-                //GET Response
                 if (request.method().equals(HttpMethod.GET))
                 {
-                    httpRequestLogger(request);
-
                     FullHttpResponse response = new DefaultFullHttpResponse(
                             request.protocolVersion(),
                             HttpResponseStatus.OK,
@@ -54,17 +54,14 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                     ChannelFuture f = ctx.write(response);
                 }
 
-                //POST Response
                 else if (request.method().equals(HttpMethod.POST))
                 {
-                    httpRequestLogger(request);
-
                     FullHttpResponse response = new DefaultFullHttpResponse(
                             request.protocolVersion(),
                             HttpResponseStatus.OK,
                             writePostResponse(ctx));
 
-                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.TEXT_PLAIN)
+                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.TEXT_HTML)
                             .setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
 
                     ChannelFuture f = ctx.write(response);
@@ -127,7 +124,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                 .append("<html><head><meta charset='utf-8' /><title>")
                 .append("ruby yacht poet gang")
                 .append("</title></head><body>\r\n")
-                .append("<form action=\"post\" method=\"POST\">\r\n")
+                .append("<form method=\"POST\">\r\n")
                 .append("Enter your name: \r\n")
                 .append("<input type=\"text\" name=\"user\" />\r\n")
                 .append("<input type=\"submit\" value=\"Submit\" />\r\n")
