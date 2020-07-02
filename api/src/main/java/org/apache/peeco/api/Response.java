@@ -26,6 +26,12 @@ public class Response
         return headers;
     }
 
+    public void addHeader(String name, String value)
+    {
+        headers().computeIfAbsent(name, k -> new ArrayList<>())
+                .add(value);
+    }
+
     public ByteArrayInputStream output()
     {
         return output;

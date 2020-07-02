@@ -40,11 +40,12 @@ public class HelloWorldHandler
     public Response applyWithoutCompletionStage(Request request)
     {
         String responseContent = "Hello World from " + getClass().getName();
-        ArrayList<String> statusCodeValues = new ArrayList<>(Arrays.asList("200"));
-        ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
+        ByteArrayInputStream output = new ByteArrayInputStream(
+                responseContent.getBytes(StandardCharsets.UTF_8));
 
         Response response = new Response(output);
-        response.headers().put("statusCode", statusCodeValues);
+        response.addHeader("statusCode", "200");
+        response.addHeader("content-type", "text/html");
 
         return response;
     }

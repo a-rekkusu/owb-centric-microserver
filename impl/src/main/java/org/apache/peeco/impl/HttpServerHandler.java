@@ -11,131 +11,124 @@ import io.netty.util.CharsetUtil;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CompletionStage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.peeco.api.Request;
+import org.apache.peeco.api.Response;
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
 {
+    private static final HttpDataFactory factory = new DefaultHttpDataFactory(16384L);
+    
+    private List<HttpHandlerInfo> httpHandlerInfos;
+
     public HttpServerHandler(List<HttpHandlerInfo> httpHandlerInfos)
     {
         this.httpHandlerInfos = httpHandlerInfos;
     }
 
-    private List<HttpHandlerInfo> httpHandlerInfos;
-    private final StringBuilder responseContent = new StringBuilder();
-    private static final HttpDataFactory factory = new DefaultHttpDataFactory(16384L);
-    private HttpPostRequestDecoder decoder;
-    private HttpRequest request;
-    private BeanManager beanManager = CDI.current().getBeanManager();
-
+    @Override
     public void channelReadComplete(ChannelHandlerContext ctx)
     {
         ctx.flush();
     }
 
+    @Override
     public void channelRead0(ChannelHandlerContext ctx, HttpObject msg)
     {
         if (msg instanceof HttpRequest)
         {
-            request = (HttpRequest) msg;
-            httpRequestLogger(request);
-
-            if (uri_matching(request))
+            HttpRequest nettyRequest = (HttpRequest) msg;
+            httpRequestLogger(nettyRequest);
+            
+            HttpHandlerInfo info = HttpHandlerUtils.getMatchingHandler(nettyRequest, httpHandlerInfos);
+            if (info == null)
             {
-                if (request.method().equals(HttpMethod.GET))
+                // TODO ignore? throw exception? dont know
+            }
+
+            Request request = new Request(HttpHandlerUtils.mapHttpMethod(nettyRequest.method()), nettyRequest.uri(), null);
+
+            // TODO parse queryParams from netty and add in our request
+            // TODO parse headers from netty and add in our request
+            parseBodyParams(nettyRequest, request);
+
+            
+            
+            Object handlerParentBean = CDI.current().select(info.clazz).get();
+
+            try
+            {
+                Object response = info.method.invoke(handlerParentBean, request);
+
+                if (response instanceof Response)
                 {
-                    FullHttpResponse response = new DefaultFullHttpResponse(
-                            request.protocolVersion(),
+                    Response peecoResponse = (Response) response;
+
+                    ByteBuf nettyBuffer = ctx.alloc().buffer(peecoResponse.output().available());
+                    
+                    nettyBuffer.writeBytes(peecoResponse.output(), peecoResponse.output().available());
+                    
+                    FullHttpResponse nettyResponse = new DefaultFullHttpResponse(
+                            nettyRequest.protocolVersion(),
                             HttpResponseStatus.OK,
-                            writeGetResponse(ctx));
+                            nettyBuffer);
 
-                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.TEXT_HTML)
-                            .setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
-
-                    ChannelFuture f = ctx.write(response);
+                    for (Map.Entry<String, List<String>> headers : peecoResponse.headers().entrySet())
+                    {
+                        nettyResponse.headers().add(headers.getKey(), headers.getValue());
+                    }
+                    
+                    nettyResponse.headers()
+                            .setInt(HttpHeaderNames.CONTENT_LENGTH, nettyResponse.content().readableBytes());
+                    ChannelFuture f = ctx.write(nettyResponse);
                 }
-
-                else if (request.method().equals(HttpMethod.POST))
+                else if (response instanceof CompletionStage)
                 {
-                    FullHttpResponse response = new DefaultFullHttpResponse(
-                            request.protocolVersion(),
-                            HttpResponseStatus.OK,
-                            writePostResponse(ctx));
+                    // TODO impl
+                }                
+            }
+            catch (Exception ex)
+            {
+                // TODO exception handling
+                ex.printStackTrace();
+            }   
+        }
+    }
 
-                    response.headers().set(HttpHeaderNames.CONTENT_TYPE, HttpHeaderValues.TEXT_HTML)
-                            .setInt(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
+    
+    protected void parseBodyParams(HttpRequest nettyRequest, Request request)
+    {
+        if (nettyRequest.method().equals(HttpMethod.POST))
+        {
+            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(factory, nettyRequest);
+            for (InterfaceHttpData data : decoder.getBodyHttpDatas())
+            {
+                if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute)
+                {
+                    Attribute attr = (Attribute) data;
+                    List<String> values = request.bodyParameters().computeIfAbsent(data.getName(), k -> new ArrayList<>());
 
-                    ChannelFuture f = ctx.write(response);
+                    // TODO nicer eception handling
+                    try {
+                        values.add(attr.getValue());
+                    }
+                    catch (IOException ex)
+                    {
+                        ex.printStackTrace();
+                    }
                 }
             }
         }
     }
-
-    public boolean uri_matching(HttpRequest request)
-    {
-        for (HttpHandlerInfo info : httpHandlerInfos)
-        {
-            if (request.uri().equals(info.values.url))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private ByteBuf writePostResponse(ChannelHandlerContext ctx)
-    {
-        decoder = new HttpPostRequestDecoder(factory, request);
-        InterfaceHttpData data = decoder.getBodyHttpData("user");
-
-        System.out.println("http data type (expected: attribute) : " + data.getHttpDataType());
-
-        Attribute attribute = (Attribute) data;
-
-        try
-        {
-            String user = attribute.getValue();
-
-            responseContent.setLength(0);
-            responseContent.append("<!DOCTYPE html>\r\n")
-                    .append("<html><head><meta charset='utf-8' /><title>")
-                    .append("Welcome title")
-                    .append("</title></head><body>\r\n")
-                    .append("Echo from Netty: welcome " + user + "!\r\n")
-                    .append("</body></html>\r\n");
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-            responseContent.setLength(0);
-            responseContent.append("\r\nBODY Attribute: " + attribute.getHttpDataType().name() + ": " + attribute.getName() + " Error while reading value: " + e.getMessage() + "\r\n");
-        }
-
-        ByteBuf buffer = ctx.alloc().buffer(responseContent.length());
-        buffer.writeCharSequence(responseContent.toString(), CharsetUtil.UTF_8);
-        decoder.destroy();
-
-        return buffer;
-    }
-
-    private ByteBuf writeGetResponse(ChannelHandlerContext ctx)
-    {
-        responseContent.setLength(0);
-        responseContent.append("<!DOCTYPE html>\r\n")
-                .append("<html><head><meta charset='utf-8' /><title>")
-                .append("ruby yacht poet gang")
-                .append("</title></head><body>\r\n")
-                .append("<form method=\"POST\">\r\n")
-                .append("Enter your name: \r\n")
-                .append("<input type=\"text\" name=\"user\" />\r\n")
-                .append("<input type=\"submit\" value=\"Submit\" />\r\n")
-                .append("</form>\r\n")
-                .append("</body></html>\r\n");
-
-        ByteBuf buffer = ctx.alloc().buffer(responseContent.length());
-        buffer.writeCharSequence(responseContent.toString(), CharsetUtil.UTF_8);
-
-        return buffer;
-    }
-
+    
+    
     public void httpRequestLogger(HttpRequest req)
     {
         System.out.println("Request received:");

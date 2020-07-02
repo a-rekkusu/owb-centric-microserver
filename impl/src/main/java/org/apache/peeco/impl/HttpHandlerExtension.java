@@ -4,28 +4,32 @@ import org.apache.peeco.api.HttpHandler;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.*;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 
 public class HttpHandlerExtension implements Extension
 {
-    private static List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
+    private List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
     private HttpServer server;
 
     <T> void processAnnotatedType(@Observes @WithAnnotations(HttpHandler.class) ProcessAnnotatedType<T> patEvent)
     {
         System.out.println("----PROCESS ANNOTATED TYPE----");
 
-        getAnnotations(patEvent.getAnnotatedType().getJavaClass());
-
-        for (HttpHandlerInfo info : httpHandlerInfos)
+        List<HttpHandlerInfo> infos = collectInfos(patEvent.getAnnotatedType().getJavaClass());
+        for (HttpHandlerInfo info : infos)
         {
             System.out.println("Class: " + info.clazz +
                     ", Method: " + info.method +
-                    ", Annotation: " + info.annotation +
-                    ", Annotation Values: " + info.values.url + ", " + Arrays.toString(info.values.httpMethod) + ", " + info.values.matching);
+                    ", Annotation: " + info.annotation.url() + ", " + Arrays.toString(info.annotation.method()) + ", " + info.annotation.matching());
         }
+        
+        
+        // TODO add validation
+        // only 1 method param == Request
+        // return value must be REsponse or CompletionStage<Response>
+        
+        httpHandlerInfos.addAll(infos);
     }
 
     void afterDeploymentValidation(@Observes AfterDeploymentValidation adv) throws Exception
@@ -36,21 +40,20 @@ public class HttpHandlerExtension implements Extension
         server.bootstrap();
     }
 
-    public List<HttpHandlerInfo> getAnnotations(Class clazz)
+    public List<HttpHandlerInfo> collectInfos(Class clazz)
     {
+        ArrayList<HttpHandlerInfo> infos = new ArrayList<>();
+        
         for (Method method : clazz.getDeclaredMethods())
         {
             Class type = method.getDeclaringClass();
-            Annotation annotation = method.getAnnotation(HttpHandler.class);
+            HttpHandler annotation = method.getAnnotation(HttpHandler.class);
             if (annotation != null)
             {
-                AnnotationValues values = new AnnotationValues(
-                        method.getAnnotation(HttpHandler.class).method(),
-                        method.getAnnotation(HttpHandler.class).url(),
-                        method.getAnnotation(HttpHandler.class).matching());
-                httpHandlerInfos.add(new HttpHandlerInfo(type, method, annotation, values));
+                infos.add(new HttpHandlerInfo(type, method, annotation));
             }
         }
-        return httpHandlerInfos;
+
+        return infos;
     }
 }

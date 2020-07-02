@@ -20,6 +20,7 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel>
         this.httpHandlerInfos = httpHandlerInfos;
     }
 
+    @Override
     public void initChannel(SocketChannel ch) {
         ChannelPipeline p = ch.pipeline();
         if (this.sslCtx != null) {
