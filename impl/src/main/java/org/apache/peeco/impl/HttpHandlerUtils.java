@@ -66,7 +66,7 @@ public class HttpHandlerUtils
 
         if (matchings.size() > 1)
         {
-            throw new Exception("Multiple HtppHandlerMethods were found for the given URI. Only one method is allowed.");
+            throw new Exception("Multiple HttpHandlerMethods were found for the given URI. Only one method is allowed.");
         }
 
         return matchings.isEmpty() ? null : matchings.get(0);
