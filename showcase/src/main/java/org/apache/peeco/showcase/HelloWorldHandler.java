@@ -48,7 +48,20 @@ public class HelloWorldHandler
         return response;
     }
 
-    //test - diese methode darf von processAnnotatedType nicht berücksichtigt werden
+    @HttpHandler(method = {HttpMethod.GET}, url = "/hello3/*", matching = Matching.WILDCARD)
+    public Response applyWithWildcardMatching(Request request){
+        String responseContent = "Hello with Wildcard URL from " + getClass().getName();
+        ByteArrayInputStream output = new ByteArrayInputStream(
+                responseContent.getBytes(StandardCharsets.UTF_8));
+
+        Response response = new Response(output);
+        response.addHeader("statusCode", "200");
+        response.addHeader("content-type", "text/html");
+
+        return response;
+    }
+
+    //test - method must not be discovered by processAnnotatedType
     @RequestScoped
     public void noHandlerAnnotation()
     {

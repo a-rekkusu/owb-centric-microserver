@@ -33,7 +33,6 @@ public class HttpHandlerExtension implements Extension
 
     void afterDeploymentValidation(@Observes AfterDeploymentValidation adv) throws Exception
     {
-        //netty starten, http handler holen, url bei netty registrieren, handler reinhängen
         System.out.println("----AFTER DEPLOYMENT VALIDATION----");
         server = new HttpServer(httpHandlerInfos);
         server.bootstrap();

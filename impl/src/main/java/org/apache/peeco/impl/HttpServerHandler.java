@@ -6,19 +6,14 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.*;
-import io.netty.util.CharsetUtil;
 
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.apache.peeco.api.Request;
 import org.apache.peeco.api.Response;
@@ -41,7 +36,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
     }
 
     @Override
-    public void channelRead0(ChannelHandlerContext ctx, HttpObject msg)
+    public void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception
     {
         if (msg instanceof HttpRequest)
         {
@@ -49,9 +44,10 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
             httpRequestLogger(nettyRequest);
 
             HttpHandlerInfo info = HttpHandlerUtils.getMatchingHandler(nettyRequest, httpHandlerInfos);
+
             if (info == null)
             {
-                // TODO ignore? throw exception? dont know
+                throw new Exception("No matching HttpHandler found for given URI.");
             }
 
             Request request = new Request(HttpHandlerUtils.mapHttpMethod(nettyRequest.method()), nettyRequest.uri(), null);
@@ -86,11 +82,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
 
                     nettyResponse.headers()
                             .setInt(HttpHeaderNames.CONTENT_LENGTH, nettyResponse.content().readableBytes());
+
                     ChannelFuture f = ctx.write(nettyResponse);
                 } else if (response instanceof CompletionStage)
                 {
                     // TODO impl
-
 
                 }
             } catch (Exception ex)
@@ -138,6 +134,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                     }
                 }
             }
+            decoder.destroy();
         }
     }
 

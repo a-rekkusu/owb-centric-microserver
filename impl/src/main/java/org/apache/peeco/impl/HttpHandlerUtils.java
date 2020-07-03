@@ -2,6 +2,7 @@ package org.apache.peeco.impl;
 
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+import org.apache.peeco.api.Matching;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,27 +38,35 @@ public class HttpHandlerUtils
         return null;
     }
 
-    public static HttpHandlerInfo getMatchingHandler(HttpRequest request, List<HttpHandlerInfo> infos)
+    public static HttpHandlerInfo getMatchingHandler(HttpRequest nettyRequest, List<HttpHandlerInfo> infos) throws Exception
     {
         List<HttpHandlerInfo> matchings = new ArrayList<>();
 
         for (HttpHandlerInfo info : infos)
         {
-            if (request.uri().equals(info.annotation.url())
-                    && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(request.method())))
+            if (info.annotation.matching().equals(Matching.EXACT))
             {
-                matchings.add(info);
+                if (nettyRequest.uri().equals(info.annotation.url())
+                        && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
+                {
+                    matchings.add(info);
+                }
+            } else if (info.annotation.matching().equals(Matching.WILDCARD))
+            {
+                String uri = info.annotation.url();
+                String url = uri.substring(0, uri.length() - 2);
+
+                if (uri.endsWith("/*") && nettyRequest.uri().startsWith(url)
+                        && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
+                {
+                    matchings.add(info);
+                }
             }
         }
 
-
-
-        // TODO wildcard matching e.g. restfull urls
-
         if (matchings.size() > 1)
         {
-            // TODO
-            // throw exception because only one handler is allowed for matching url/method?
+            throw new Exception("Multiple HtppHandlerMethods were found for the given URI. Only one method is allowed.");
         }
 
         return matchings.isEmpty() ? null : matchings.get(0);
