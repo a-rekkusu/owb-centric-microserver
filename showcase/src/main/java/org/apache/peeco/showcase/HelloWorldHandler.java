@@ -9,25 +9,23 @@ import javax.enterprise.context.RequestScoped;
 import java.io.ByteArrayInputStream;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 @ApplicationScoped
 public class HelloWorldHandler
 {
-    @HttpHandler(method = {HttpMethod.POST}, url = "/hello", matching = Matching.EXACT)
+    @HttpHandler(method = {HttpMethod.GET, HttpMethod.POST}, url = "/hello", matching = Matching.EXACT)
     public CompletionStage<Response> apply(Request request)
     {
         String responseContent = "Hello World from " + getClass().getName();
-        ArrayList<String> statusCodeValues = new ArrayList<>(Arrays.asList("200"));
         ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
 
         return CompletableFuture.supplyAsync(() ->
         {
             Response response = new Response();
-            response.headers().put("statusCode", statusCodeValues);
+            response.addHeader("statusCode", "200");
+            response.addHeader("content-type", "text/html");
             response.setOutput(output);
             //OR as setOutput(String):
             //response.setOutput(responseContent);

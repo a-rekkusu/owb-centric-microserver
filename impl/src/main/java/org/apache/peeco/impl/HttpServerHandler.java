@@ -19,13 +19,14 @@ import java.util.Map;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.apache.peeco.api.Request;
 import org.apache.peeco.api.Response;
 
 public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
 {
     private static final HttpDataFactory factory = new DefaultHttpDataFactory(16384L);
-    
+
     private List<HttpHandlerInfo> httpHandlerInfos;
 
     public HttpServerHandler(List<HttpHandlerInfo> httpHandlerInfos)
@@ -46,7 +47,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
         {
             HttpRequest nettyRequest = (HttpRequest) msg;
             httpRequestLogger(nettyRequest);
-            
+
             HttpHandlerInfo info = HttpHandlerUtils.getMatchingHandler(nettyRequest, httpHandlerInfos);
             if (info == null)
             {
@@ -55,12 +56,10 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
 
             Request request = new Request(HttpHandlerUtils.mapHttpMethod(nettyRequest.method()), nettyRequest.uri(), null);
 
-            // TODO parse queryParams from netty and add in our request
-            // TODO parse headers from netty and add in our request
+            parseHeaders(nettyRequest, request);
+            parseQueryParams(nettyRequest, request);
             parseBodyParams(nettyRequest, request);
 
-            
-            
             Object handlerParentBean = CDI.current().select(info.clazz).get();
 
             try
@@ -72,9 +71,9 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                     Response peecoResponse = (Response) response;
 
                     ByteBuf nettyBuffer = ctx.alloc().buffer(peecoResponse.output().available());
-                    
+
                     nettyBuffer.writeBytes(peecoResponse.output(), peecoResponse.output().available());
-                    
+
                     FullHttpResponse nettyResponse = new DefaultFullHttpResponse(
                             nettyRequest.protocolVersion(),
                             HttpResponseStatus.OK,
@@ -84,25 +83,39 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                     {
                         nettyResponse.headers().add(headers.getKey(), headers.getValue());
                     }
-                    
+
                     nettyResponse.headers()
                             .setInt(HttpHeaderNames.CONTENT_LENGTH, nettyResponse.content().readableBytes());
                     ChannelFuture f = ctx.write(nettyResponse);
-                }
-                else if (response instanceof CompletionStage)
+                } else if (response instanceof CompletionStage)
                 {
                     // TODO impl
-                }                
-            }
-            catch (Exception ex)
+
+
+                }
+            } catch (Exception ex)
             {
                 // TODO exception handling
                 ex.printStackTrace();
-            }   
+            }
         }
     }
 
-    
+    protected void parseHeaders(HttpRequest nettyRequest, Request request)
+    {
+        for (Map.Entry<String, String> headers : nettyRequest.headers())
+        {
+            List<String> values = request.headers().computeIfAbsent(headers.getKey(), k -> new ArrayList<>());
+
+            List<String> nettyHeaderValues = Arrays.asList(headers.getValue().split(","));
+
+            for (String value : nettyHeaderValues)
+            {
+                values.add(value);
+            }
+        }
+    }
+
     protected void parseBodyParams(HttpRequest nettyRequest, Request request)
     {
         if (nettyRequest.method().equals(HttpMethod.POST))
@@ -115,11 +128,11 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                     Attribute attr = (Attribute) data;
                     List<String> values = request.bodyParameters().computeIfAbsent(data.getName(), k -> new ArrayList<>());
 
-                    // TODO nicer eception handling
-                    try {
+                    // TODO exception handling
+                    try
+                    {
                         values.add(attr.getValue());
-                    }
-                    catch (IOException ex)
+                    } catch (IOException ex)
                     {
                         ex.printStackTrace();
                     }
@@ -127,8 +140,23 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
             }
         }
     }
-    
-    
+
+    protected void parseQueryParams(HttpRequest nettyRequest, Request request)
+    {
+        QueryStringDecoder decoder = new QueryStringDecoder(nettyRequest.uri());
+
+        for (Map.Entry<String, List<String>> queryParameters : decoder.parameters().entrySet())
+        {
+            List<String> values = request.queryParameters().computeIfAbsent(queryParameters.getKey(), k -> new ArrayList<>());
+
+            for (String value : queryParameters.getValue())
+            {
+                values.add(value);
+            }
+        }
+    }
+
+
     public void httpRequestLogger(HttpRequest req)
     {
         System.out.println("Request received:");

@@ -1,11 +1,14 @@
 package org.apache.peeco.impl;
 
 import org.apache.peeco.api.HttpHandler;
+import org.apache.peeco.api.Request;
+import org.apache.peeco.api.Response;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.*;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.concurrent.CompletionStage;
 
 public class HttpHandlerExtension implements Extension
 {
@@ -17,18 +20,14 @@ public class HttpHandlerExtension implements Extension
         System.out.println("----PROCESS ANNOTATED TYPE----");
 
         List<HttpHandlerInfo> infos = collectInfos(patEvent.getAnnotatedType().getJavaClass());
+
         for (HttpHandlerInfo info : infos)
         {
             System.out.println("Class: " + info.clazz +
                     ", Method: " + info.method +
                     ", Annotation: " + info.annotation.url() + ", " + Arrays.toString(info.annotation.method()) + ", " + info.annotation.matching());
         }
-        
-        
-        // TODO add validation
-        // only 1 method param == Request
-        // return value must be REsponse or CompletionStage<Response>
-        
+
         httpHandlerInfos.addAll(infos);
     }
 
@@ -48,7 +47,9 @@ public class HttpHandlerExtension implements Extension
         {
             Class type = method.getDeclaringClass();
             HttpHandler annotation = method.getAnnotation(HttpHandler.class);
-            if (annotation != null)
+            if (annotation != null
+                    && (method.getReturnType() == Response.class || method.getReturnType() == CompletionStage.class)
+                    && method.getParameterTypes()[0] == Request.class)
             {
                 infos.add(new HttpHandlerInfo(type, method, annotation));
             }
