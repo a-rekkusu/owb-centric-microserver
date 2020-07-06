@@ -15,15 +15,18 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel>
     private final SslContext sslCtx;
     private List<HttpHandlerInfo> httpHandlerInfos;
 
-    public HttpServerInitializer(SslContext sslCtx, List<HttpHandlerInfo> httpHandlerInfos) {
+    public HttpServerInitializer(SslContext sslCtx, List<HttpHandlerInfo> httpHandlerInfos)
+    {
         this.sslCtx = sslCtx;
         this.httpHandlerInfos = httpHandlerInfos;
     }
 
     @Override
-    public void initChannel(SocketChannel ch) {
+    public void initChannel(SocketChannel ch)
+    {
         ChannelPipeline p = ch.pipeline();
-        if (this.sslCtx != null) {
+        if (this.sslCtx != null)
+        {
             p.addLast(this.sslCtx.newHandler(ch.alloc()));
         }
 

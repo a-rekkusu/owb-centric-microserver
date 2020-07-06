@@ -33,7 +33,8 @@ public class HttpServer
         {
             SelfSignedCertificate ssc = new SelfSignedCertificate();
             sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
-        } else
+        }
+        else
         {
             sslCtx = null;
         }
@@ -49,10 +50,11 @@ public class HttpServer
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new HttpServerInitializer(sslCtx, httpHandlerInfos));
-            Channel ch = b.bind(PORT ).sync().channel();
+            Channel ch = b.bind(PORT).sync().channel();
             System.err.println("Open your web browser and navigate to " + (SSL ? "https" : "http") + "://127.0.0.1:" + PORT + '/');
             ch.closeFuture().sync();
-        } finally
+        }
+        finally
         {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();

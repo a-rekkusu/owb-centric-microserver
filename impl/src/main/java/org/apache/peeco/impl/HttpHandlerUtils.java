@@ -51,7 +51,8 @@ public class HttpHandlerUtils
                 {
                     matchings.add(info);
                 }
-            } else if (info.annotation.matching().equals(Matching.WILDCARD))
+            }
+            else if (info.annotation.matching().equals(Matching.WILDCARD))
             {
                 String uri = info.annotation.url();
                 String url = uri.substring(0, uri.length() - 2);
