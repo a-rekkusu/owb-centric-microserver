@@ -44,7 +44,6 @@ public class Response
 
     public void setOutput(String output)
     {
-        addHeader("content-length", String.valueOf(output.length()));
         setOutput(new ByteArrayInputStream(output.getBytes()));
     }
 }

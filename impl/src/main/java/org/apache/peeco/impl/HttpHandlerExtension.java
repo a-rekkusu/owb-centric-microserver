@@ -15,7 +15,7 @@ public class HttpHandlerExtension implements Extension
     private List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
     private HttpServer server;
 
-    <T> void processAnnotatedType(@Observes @WithAnnotations(HttpHandler.class) ProcessAnnotatedType<T> patEvent)
+    <T> void processAnnotatedType(@Observes @WithAnnotations(HttpHandler.class) ProcessAnnotatedType<T> patEvent) throws Exception
     {
         System.out.println("----PROCESS ANNOTATED TYPE----");
 
@@ -38,20 +38,29 @@ public class HttpHandlerExtension implements Extension
         server.bootstrap();
     }
 
-    public List<HttpHandlerInfo> collectInfos(Class clazz)
+    public List<HttpHandlerInfo> collectInfos(Class clazz) throws Exception
     {
         ArrayList<HttpHandlerInfo> infos = new ArrayList<>();
-        
-        for (Method method : clazz.getDeclaredMethods())
+
+        try
         {
-            Class type = method.getDeclaringClass();
-            HttpHandler annotation = method.getAnnotation(HttpHandler.class);
-            if (annotation != null
-                    && (method.getReturnType() == Response.class || method.getReturnType() == CompletionStage.class)
-                    && method.getParameterTypes()[0] == Request.class)
+            for (Method method : clazz.getDeclaredMethods())
             {
-                infos.add(new HttpHandlerInfo(type, method, annotation));
+                Class type = method.getDeclaringClass();
+                HttpHandler annotation = method.getAnnotation(HttpHandler.class);
+
+                if (annotation != null
+                        && (method.getReturnType() == Response.class || method.getReturnType() == CompletionStage.class)
+                        && method.getParameterTypes()[0] == Request.class)
+                {
+                    infos.add(new HttpHandlerInfo(type, method, annotation));
+                }
             }
+        }
+        catch  (Exception ex){
+            throw new Exception("The CDI Container could not find any valid HTTP Handlers. The return type of the annotated method must be " +
+                    Response.class.toString() + " or "  + CompletionStage.class.toString() + "<Response>. The first argument in the method signature must be " +
+                    Request.class.toString() + ".");
         }
 
         return infos;

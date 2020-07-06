@@ -45,9 +45,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
 
             if (info == null)
             {
-                throw new Exception("No matching HttpHandler found for given URI.");
+                throw new Exception("No matching HttpHandler found for incoming URI from Netty Request: " + nettyRequest.uri());
             }
-
 
             Request request = new Request(HttpHandlerUtils.mapHttpMethod(nettyRequest.method()), nettyRequest.uri(), null);
 
@@ -59,51 +58,60 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
 
             try
             {
-                Object response = info.method.invoke(handlerParentBean, request);
+                Object response_ = info.method.invoke(handlerParentBean, request);
 
-                if (response instanceof Response)
+                if (response_ instanceof Response)
                 {
-                    Response peecoResponse = (Response) response;
+                    Response response = (Response) response_;
 
-                    ctx.write(createNettyResponse(ctx, peecoResponse, nettyRequest), ctx.voidPromise());
-
-                } else if (response instanceof CompletionStage)
+                    ctx.write(createNettyResponse(ctx, response, nettyRequest), ctx.voidPromise());
+                }
+                else if (response_ instanceof CompletionStage)
                 {
-                    CompletionStage<Response> peecoCompletionStage = (CompletionStage<Response>) response;
+                    CompletionStage<Response> completionStageResponse = (CompletionStage<Response>) response_;
 
-                    peecoCompletionStage.thenAccept(peecoResponse ->
+                    completionStageResponse.thenAccept(response ->
                     {
                         try
                         {
-                            ctx.write(createNettyResponse(ctx, peecoResponse, nettyRequest))
+                            ctx.write(createNettyResponse(ctx, response, nettyRequest))
                                     .addListener((ChannelFutureListener) channelFuture ->
                                             System.out.println(channelFuture.toString() + " IS DONE!"));
-                        } catch (IOException e)
+                        }
+                        catch (IOException ex)
                         {
-                            e.printStackTrace();
+                            //redundant catch as it's caught in createNettyResponse() already, but IDE requires to catch it here again
                         }
                     });
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                // TODO exception handling
-                ex.printStackTrace();
+                throw new RuntimeException("Failed to create Netty Response from given HttpHandler Response object, Netty ChannelHandlerContext and Netty Request.");
             }
         }
     }
 
-    public FullHttpResponse createNettyResponse(ChannelHandlerContext ctx, Response peecoResponse, HttpRequest nettyRequest) throws IOException
+    public FullHttpResponse createNettyResponse(ChannelHandlerContext ctx, Response response, HttpRequest nettyRequest) throws IOException
     {
-        ByteBuf nettyBuffer = ctx.alloc().buffer(peecoResponse.output().available());
 
-        nettyBuffer.writeBytes(peecoResponse.output(), peecoResponse.output().available());
+        ByteBuf nettyBuffer = ctx.alloc().buffer(response.output().available());
+
+        try
+        {
+            nettyBuffer.writeBytes(response.output(), response.output().available());
+        }
+        catch (IOException ex)
+        {
+            throw new IOException("Response output from HttpHandler could not be written to Netty ByteBuffer.");
+        }
 
         FullHttpResponse nettyResponse = new DefaultFullHttpResponse(
                 nettyRequest.protocolVersion(),
                 HttpResponseStatus.OK,
                 nettyBuffer);
 
-        for (Map.Entry<String, List<String>> headers : peecoResponse.headers().entrySet())
+        for (Map.Entry<String, List<String>> headers : response.headers().entrySet())
         {
             nettyResponse.headers().add(headers.getKey(), headers.getValue());
         }
@@ -141,13 +149,13 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                     Attribute attr = (Attribute) data;
                     List<String> values = request.bodyParameters().computeIfAbsent(data.getName(), k -> new ArrayList<>());
 
-                    // TODO exception handling
                     try
                     {
                         values.add(attr.getValue());
-                    } catch (IOException ex)
+                    }
+                    catch (IOException ex)
                     {
-                        ex.printStackTrace();
+                        throw new RuntimeException("Failed to parse attribute values from Netty Request body to " + Request.class.toString());
                     }
                 }
             }

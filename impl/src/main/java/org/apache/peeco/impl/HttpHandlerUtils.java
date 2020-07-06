@@ -38,7 +38,7 @@ public class HttpHandlerUtils
         return null;
     }
 
-    public static HttpHandlerInfo getMatchingHandler(HttpRequest nettyRequest, List<HttpHandlerInfo> infos) throws Exception
+    public static HttpHandlerInfo getMatchingHandler(HttpRequest nettyRequest, List<HttpHandlerInfo> infos) throws RuntimeException
     {
         List<HttpHandlerInfo> matchings = new ArrayList<>();
 
@@ -66,7 +66,8 @@ public class HttpHandlerUtils
 
         if (matchings.size() > 1)
         {
-            throw new Exception("Multiple HttpHandlerMethods were found for the given URI. Only one method is allowed.");
+            throw new RuntimeException("Multiple HttpHandlers were found for the incoming Netty Request URI: " + nettyRequest.uri() +
+                    ". Only one method is allowed.");
         }
 
         return matchings.isEmpty() ? null : matchings.get(0);
