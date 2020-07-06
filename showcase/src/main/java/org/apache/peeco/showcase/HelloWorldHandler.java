@@ -18,7 +18,7 @@ public class HelloWorldHandler
     @HttpHandler(method = {HttpMethod.GET, HttpMethod.POST}, url = "/hello", matching = Matching.EXACT)
     public CompletionStage<Response> apply(Request request)
     {
-        String responseContent = "Hello World from " + getClass().getName();
+        String responseContent = "Hello World with CompletionStage from " + getClass().getName();
         ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
 
         return CompletableFuture.supplyAsync(() ->
@@ -26,10 +26,7 @@ public class HelloWorldHandler
             Response response = new Response();
             response.addHeader("statusCode", "200");
             response.addHeader("content-type", "text/html");
-            response.setOutput(output);
-            //OR as setOutput(String):
-            //response.setOutput(responseContent);
-
+            response.setOutput("Test");
             return response;
         });
     }

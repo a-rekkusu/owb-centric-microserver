@@ -39,12 +39,12 @@ public class Response
 
     public void setOutput(InputStream stream)
     {
-
+        this.output = (ByteArrayInputStream) stream;
     }
 
     public void setOutput(String output)
     {
-        headers().put("content-length", new ArrayList<>(Arrays.asList(String.valueOf(output.length()))));
+        addHeader("content-length", String.valueOf(output.length()));
         setOutput(new ByteArrayInputStream(output.getBytes()));
     }
 }

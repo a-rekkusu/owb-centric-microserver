@@ -1,9 +1,7 @@
 package org.apache.peeco.impl;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.*;
 
@@ -66,28 +64,24 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                 {
                     Response peecoResponse = (Response) response;
 
-                    ByteBuf nettyBuffer = ctx.alloc().buffer(peecoResponse.output().available());
+                    ctx.write(createNettyResponse(ctx, peecoResponse, nettyRequest), ctx.voidPromise());
 
-                    nettyBuffer.writeBytes(peecoResponse.output(), peecoResponse.output().available());
-
-                    FullHttpResponse nettyResponse = new DefaultFullHttpResponse(
-                            nettyRequest.protocolVersion(),
-                            HttpResponseStatus.OK,
-                            nettyBuffer);
-
-                    for (Map.Entry<String, List<String>> headers : peecoResponse.headers().entrySet())
-                    {
-                        nettyResponse.headers().add(headers.getKey(), headers.getValue());
-                    }
-
-                    nettyResponse.headers()
-                            .setInt(HttpHeaderNames.CONTENT_LENGTH, nettyResponse.content().readableBytes());
-
-                    ChannelFuture f = ctx.write(nettyResponse);
                 } else if (response instanceof CompletionStage)
                 {
-                    // TODO impl
+                    CompletionStage<Response> peecoCompletionStage = (CompletionStage<Response>) response;
 
+                    peecoCompletionStage.thenAccept(peecoResponse ->
+                    {
+                        try
+                        {
+                            ctx.write(createNettyResponse(ctx, peecoResponse, nettyRequest))
+                                    .addListener((ChannelFutureListener) channelFuture ->
+                                            System.out.println(channelFuture.toString() + " IS DONE!"));
+                        } catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+                    });
                 }
             } catch (Exception ex)
             {
@@ -95,6 +89,28 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                 ex.printStackTrace();
             }
         }
+    }
+
+    public FullHttpResponse createNettyResponse(ChannelHandlerContext ctx, Response peecoResponse, HttpRequest nettyRequest) throws IOException
+    {
+        ByteBuf nettyBuffer = ctx.alloc().buffer(peecoResponse.output().available());
+
+        nettyBuffer.writeBytes(peecoResponse.output(), peecoResponse.output().available());
+
+        FullHttpResponse nettyResponse = new DefaultFullHttpResponse(
+                nettyRequest.protocolVersion(),
+                HttpResponseStatus.OK,
+                nettyBuffer);
+
+        for (Map.Entry<String, List<String>> headers : peecoResponse.headers().entrySet())
+        {
+            nettyResponse.headers().add(headers.getKey(), headers.getValue());
+        }
+
+        nettyResponse.headers()
+                .setInt(HttpHeaderNames.CONTENT_LENGTH, nettyResponse.content().readableBytes());
+
+        return nettyResponse;
     }
 
     protected void parseHeaders(HttpRequest nettyRequest, Request request)
