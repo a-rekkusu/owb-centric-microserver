@@ -38,28 +38,36 @@ public class HttpHandlerExtension implements Extension
         server.bootstrap();
     }
 
-    public List<HttpHandlerInfo> collectInfos(Class clazz) throws Exception
+    public List<HttpHandlerInfo> collectInfos(Class clazz) throws RuntimeException
     {
         ArrayList<HttpHandlerInfo> infos = new ArrayList<>();
 
-        try
+        for (Method method : clazz.getDeclaredMethods())
         {
-            for (Method method : clazz.getDeclaredMethods())
-            {
-                Class type = method.getDeclaringClass();
-                HttpHandler annotation = method.getAnnotation(HttpHandler.class);
+            Class type = method.getDeclaringClass();
+            HttpHandler annotation = method.getAnnotation(HttpHandler.class);
+            boolean isRequestInParameterTypes = false;
 
-                if (annotation != null
-                        && (method.getReturnType() == Response.class || method.getReturnType() == CompletionStage.class)
-                        && method.getParameterTypes()[0] == Request.class)
+            for (Class parameterType : method.getParameterTypes())
+            {
+                if (parameterType.equals(Request.class))
                 {
-                    infos.add(new HttpHandlerInfo(type, method, annotation));
+                    isRequestInParameterTypes = true;
                 }
             }
+
+            if (annotation != null
+                    && (method.getReturnType() == Response.class || method.getReturnType() == CompletionStage.class)
+                    && isRequestInParameterTypes)
+            {
+                infos.add(new HttpHandlerInfo(type, method, annotation));
+            }
         }
-        catch  (Exception ex){
-            throw new Exception("The CDI Container could not find any valid HTTP Handlers. The return type of the annotated method must be " +
-                    Response.class.toString() + " or "  + CompletionStage.class.toString() + "<Response>. The first argument in the method signature must be " +
+
+        if (infos.isEmpty())
+        {
+            throw new RuntimeException("The CDI Container could not find any valid HTTP Handlers. The return type of the annotated method must be " +
+                    Response.class.toString() + " or " + CompletionStage.class.toString() + "<Response>. The method signature must contain " +
                     Request.class.toString() + ".");
         }
 
