@@ -23,7 +23,7 @@ public class HttpHandlerExtension implements Extension
 
         for (HttpHandlerInfo info : infos)
         {
-            System.out.println("Class: " + info.clazz +
+            System.out.println("Valid HttpHandler found: Class: " + info.clazz +
                     ", Method: " + info.method +
                     ", Annotation: " + info.annotation.url() + ", " + Arrays.toString(info.annotation.method()) + ", " + info.annotation.matching());
         }
@@ -44,31 +44,33 @@ public class HttpHandlerExtension implements Extension
 
         for (Method method : clazz.getDeclaredMethods())
         {
-            Class type = method.getDeclaringClass();
-            HttpHandler annotation = method.getAnnotation(HttpHandler.class);
-            boolean isRequestInParameterTypes = false;
-
-            for (Class parameterType : method.getParameterTypes())
+            if (method.isAnnotationPresent(HttpHandler.class))
             {
-                if (parameterType.equals(Request.class))
+                Class type = method.getDeclaringClass();
+                HttpHandler annotation = method.getAnnotation(HttpHandler.class);
+                boolean isRequestInParameterTypes = false;
+
+                for (Class parameterType : method.getParameterTypes())
                 {
-                    isRequestInParameterTypes = true;
+                    if (parameterType.equals(Request.class))
+                    {
+                        isRequestInParameterTypes = true;
+                    }
+                }
+
+                if (annotation != null
+                        && (method.getReturnType() == Response.class || method.getReturnType() == CompletionStage.class)
+                        && isRequestInParameterTypes)
+                {
+                    infos.add(new HttpHandlerInfo(type, method, annotation));
+                }
+                else
+                {
+                    throw new RuntimeException("Invalid method signature: " + method + ". The return type of the annotated method must be " +
+                            Response.class.toString() + " or " + CompletionStage.class.toString() + "<Response>. The method signature must contain " +
+                            Request.class.toString() + ".");
                 }
             }
-
-            if (annotation != null
-                    && (method.getReturnType() == Response.class || method.getReturnType() == CompletionStage.class)
-                    && isRequestInParameterTypes)
-            {
-                infos.add(new HttpHandlerInfo(type, method, annotation));
-            }
-        }
-
-        if (infos.isEmpty())
-        {
-            throw new RuntimeException("The CDI Container could not find any valid HTTP Handlers. The return type of the annotated method must be " +
-                    Response.class.toString() + " or " + CompletionStage.class.toString() + "<Response>. The method signature must contain " +
-                    Request.class.toString() + ".");
         }
 
         return infos;
