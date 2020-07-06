@@ -58,17 +58,17 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
 
             try
             {
-                Object returnType = info.method.invoke(handlerParentBean, request);
+                Object returnValue = info.method.invoke(handlerParentBean, request);
 
-                if (returnType instanceof Response)
+                if (returnValue instanceof Response)
                 {
-                    Response response = (Response) returnType;
+                    Response response = (Response) returnValue;
 
                     ctx.write(createNettyResponse(ctx, response, nettyRequest), ctx.voidPromise());
                 }
-                else if (returnType instanceof CompletionStage)
+                else if (returnValue instanceof CompletionStage)
                 {
-                    CompletionStage<Response> completionStageResponse = (CompletionStage<Response>) returnType;
+                    CompletionStage<Response> completionStageResponse = (CompletionStage<Response>) returnValue;
 
                     completionStageResponse.thenAccept(response ->
                     {
