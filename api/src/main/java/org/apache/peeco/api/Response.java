@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Response
 {
-    private ByteArrayInputStream output;
+    private InputStream output;
     private Map<String, List<String>> headers;
 
     public Response()
@@ -15,7 +15,7 @@ public class Response
         this.headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
     }
 
-    public Response(ByteArrayInputStream output)
+    public Response(InputStream output)
     {
         this.output = output;
         this.headers = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -32,14 +32,14 @@ public class Response
                 .add(value);
     }
 
-    public ByteArrayInputStream output()
+    public InputStream output()
     {
         return output;
     }
 
     public void setOutput(InputStream stream)
     {
-        this.output = (ByteArrayInputStream) stream;
+        this.output = stream;
     }
 
     public void setOutput(String output)

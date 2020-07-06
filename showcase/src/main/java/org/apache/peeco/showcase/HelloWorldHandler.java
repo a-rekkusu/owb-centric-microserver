@@ -26,7 +26,7 @@ public class HelloWorldHandler
             Response response = new Response();
             response.addHeader("statusCode", "200");
             response.addHeader("content-type", "text/html");
-            response.setOutput("Test");
+            response.setOutput(output);
             return response;
         });
     }

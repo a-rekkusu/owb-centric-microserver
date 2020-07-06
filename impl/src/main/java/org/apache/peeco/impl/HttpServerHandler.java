@@ -48,6 +48,7 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
                 throw new Exception("No matching HttpHandler found for given URI.");
             }
 
+
             Request request = new Request(HttpHandlerUtils.mapHttpMethod(nettyRequest.method()), nettyRequest.uri(), null);
 
             parseHeaders(nettyRequest, request);
