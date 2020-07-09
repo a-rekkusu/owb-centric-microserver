@@ -16,20 +16,23 @@ import java.util.List;
 
 public class HttpServer
 {
-
-    static final boolean SSL = System.getProperty("ssl") != null;
-    static final int PORT;
+    private final Configuration configuration;
     private List<HttpHandlerInfo> httpHandlerInfos;
 
     public HttpServer(List<HttpHandlerInfo> httpHandlerInfos) throws Exception
     {
+        this(httpHandlerInfos, new HttpServer.Builder());
+    }
+
+    public HttpServer(List<HttpHandlerInfo> httpHandlerInfos, Configuration configuration){
         this.httpHandlerInfos = httpHandlerInfos;
+        this.configuration = configuration;
     }
 
     public void bootstrap() throws Exception
     {
         SslContext sslCtx;
-        if (SSL)
+        if (configuration.isSsl())
         {
             SelfSignedCertificate ssc = new SelfSignedCertificate();
             sslCtx = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
@@ -50,8 +53,9 @@ public class HttpServer
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new HttpServerInitializer(sslCtx, httpHandlerInfos));
-            Channel ch = b.bind(PORT).sync().channel();
-            System.err.println("Open your web browser and navigate to " + (SSL ? "https" : "http") + "://127.0.0.1:" + PORT + '/');
+            Channel ch = b.bind(configuration.getHttpPort()).sync().channel();
+            configuration.setHost(ch.remoteAddress().toString());
+            System.err.println("Open your web browser and navigate to " + (configuration.isSsl() ? "https" : "http") + "://127.0.0.1:" + configuration.getHttpPort() + '/');
             ch.closeFuture().sync();
         }
         finally
@@ -61,10 +65,35 @@ public class HttpServer
         }
     }
 
-    static
+    public int getPort()
     {
-        PORT = Integer.parseInt(System.getProperty("port", SSL ? "8443" : "8080"));
+        return configuration.getHttpPort();
     }
+
+    public boolean isSSL()
+    {
+        return configuration.isSsl();
+    }
+
+    public String getHost(){
+        return configuration.getHost();
+    }
+
+    public List<HttpHandlerInfo> getHttpHandlerInfos(){
+        return httpHandlerInfos;
+    }
+
+    public static class Builder extends Configuration
+    {
+        public Builder()
+        {
+        }
+
+        public Builder(Configuration configuration) {
+            super(configuration);
+        }
+    }
+
 }
 
 

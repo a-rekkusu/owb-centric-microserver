@@ -34,7 +34,11 @@ public class HttpHandlerExtension implements Extension
     void afterDeploymentValidation(@Observes AfterDeploymentValidation adv) throws Exception
     {
         System.out.println("----AFTER DEPLOYMENT VALIDATION----");
-        server = new HttpServer(httpHandlerInfos);
+
+        HttpServer.Builder builder = new HttpServer.Builder();
+        builder.setHttpPort(9999);
+
+        server = new HttpServer(httpHandlerInfos, builder);
         server.bootstrap();
     }
 
