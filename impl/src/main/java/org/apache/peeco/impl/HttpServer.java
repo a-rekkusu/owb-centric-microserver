@@ -12,20 +12,29 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 
+import javax.enterprise.inject.se.SeContainer;
+import javax.enterprise.inject.se.SeContainerInitializer;
 import java.util.List;
 
-public class HttpServer
+public class HttpServer implements AutoCloseable
 {
     private final Configuration configuration;
     private List<HttpHandlerInfo> httpHandlerInfos;
 
-    public HttpServer(List<HttpHandlerInfo> httpHandlerInfos) throws Exception
+    public HttpServer() throws Exception
     {
-        this(httpHandlerInfos, new HttpServer.Builder());
+        this(new HttpServer.Builder());
     }
 
-    public HttpServer(List<HttpHandlerInfo> httpHandlerInfos, Configuration configuration){
-        this.httpHandlerInfos = httpHandlerInfos;
+    public HttpServer(Configuration configuration)
+    {
+        SeContainerInitializer initializer = SeContainerInitializer.newInstance();
+        try (SeContainer container = initializer.initialize())
+        {
+
+        }
+
+        this.httpHandlerInfos = HttpHandlerExtension.httpHandlerInfos;
         this.configuration = configuration;
     }
 
@@ -54,7 +63,7 @@ public class HttpServer
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new HttpServerInitializer(sslCtx, httpHandlerInfos));
             Channel ch = b.bind(configuration.getHttpPort()).sync().channel();
-            configuration.setHost(ch.remoteAddress().toString());
+            //configuration.setHost(ch.remoteAddress().toString());
             System.err.println("Open your web browser and navigate to " + (configuration.isSsl() ? "https" : "http") + "://127.0.0.1:" + configuration.getHttpPort() + '/');
             ch.closeFuture().sync();
         }
@@ -75,12 +84,20 @@ public class HttpServer
         return configuration.isSsl();
     }
 
-    public String getHost(){
+    public String getHost()
+    {
         return configuration.getHost();
     }
 
-    public List<HttpHandlerInfo> getHttpHandlerInfos(){
+    public List<HttpHandlerInfo> getHttpHandlerInfos()
+    {
         return httpHandlerInfos;
+    }
+
+    @Override
+    public void close() throws Exception
+    {
+
     }
 
     public static class Builder extends Configuration
@@ -89,10 +106,13 @@ public class HttpServer
         {
         }
 
-        public Builder(Configuration configuration) {
+        public Builder(Configuration configuration)
+        {
             super(configuration);
         }
     }
+
+
 
 }
 

@@ -12,7 +12,7 @@ import java.util.concurrent.CompletionStage;
 
 public class HttpHandlerExtension implements Extension
 {
-    private List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
+    public static List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
     private HttpServer server;
 
     <T> void processAnnotatedType(@Observes @WithAnnotations(HttpHandler.class) ProcessAnnotatedType<T> patEvent) throws Exception
@@ -34,12 +34,6 @@ public class HttpHandlerExtension implements Extension
     void afterDeploymentValidation(@Observes AfterDeploymentValidation adv) throws Exception
     {
         System.out.println("----AFTER DEPLOYMENT VALIDATION----");
-
-        HttpServer.Builder builder = new HttpServer.Builder();
-        builder.setHttpPort(9999);
-
-        server = new HttpServer(httpHandlerInfos, builder);
-        server.bootstrap();
     }
 
     public List<HttpHandlerInfo> collectInfos(Class clazz) throws RuntimeException
