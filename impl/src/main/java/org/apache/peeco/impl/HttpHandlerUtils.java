@@ -67,6 +67,8 @@ public class HttpHandlerUtils
 
         if (matchings.size() > 1)
         {
+            //TODO netty doesn't know who to call when you have two Wildcard Handlers with one being a part of the other, e. g. "hello/*" and "hello3/*"
+
             throw new RuntimeException("Multiple HttpHandlers were found for the incoming Netty Request URI: " + nettyRequest.uri() +
                     ". Only one method is allowed.");
         }
