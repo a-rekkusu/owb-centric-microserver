@@ -9,10 +9,9 @@ public class Bootstrapper
         HttpServer.Builder builder = new HttpServer.Builder();
         builder.setHttpPort(9999);
 
-        try (HttpServer server = new HttpServer(builder))
+        try (final HttpServer server = new HttpServer(builder))
         {
             server.bootstrap();
         }
     }
-
 }
