@@ -20,6 +20,7 @@ public class HttpServer implements AutoCloseable
 {
     private final Configuration configuration;
     private List<HttpHandlerInfo> httpHandlerInfos;
+    private static SeContainer container;
 
     public HttpServer() throws Exception
     {
@@ -28,18 +29,20 @@ public class HttpServer implements AutoCloseable
 
     public HttpServer(Configuration configuration)
     {
-        SeContainerInitializer initializer = SeContainerInitializer.newInstance();
-        try (SeContainer container = initializer.initialize())
-        {
-
-        }
-
-        this.httpHandlerInfos = HttpHandlerExtension.httpHandlerInfos;
         this.configuration = configuration;
+    }
+
+    private static void CdiInit()
+    {
+        SeContainerInitializer initializer = SeContainerInitializer.newInstance();
+        container = initializer.initialize();
     }
 
     public void bootstrap() throws Exception
     {
+        CdiInit();
+        this.httpHandlerInfos = HttpHandlerExtension.httpHandlerInfos;
+
         SslContext sslCtx;
         if (configuration.isSsl())
         {
@@ -63,7 +66,9 @@ public class HttpServer implements AutoCloseable
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new HttpServerInitializer(sslCtx, httpHandlerInfos));
             Channel ch = b.bind(configuration.getHttpPort()).sync().channel();
-            //configuration.setHost(ch.remoteAddress().toString());
+
+            //TODO set host in Configuration
+
             System.err.println("Open your web browser and navigate to " + (configuration.isSsl() ? "https" : "http") + "://127.0.0.1:" + configuration.getHttpPort() + '/');
             ch.closeFuture().sync();
         }
@@ -111,9 +116,4 @@ public class HttpServer implements AutoCloseable
             super(configuration);
         }
     }
-
-
-
 }
-
-
