@@ -11,14 +11,18 @@ import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import javax.inject.Inject;
 
 @ApplicationScoped
 public class HelloWorldHandler
 {
+    @Inject private HttpServer httpServer;
+
     @HttpHandler(method = {HttpMethod.GET, HttpMethod.POST}, url = "/hello", matching = Matching.EXACT)
     public CompletionStage<Response> apply(Request request)
     {
-        String responseContent = "Hello World with CompletionStage from " + getClass().getName();
+        String responseContent = "Hello World with CompletionStage from " + getClass().getName()
+                + " on " + httpServer.getHost() + " and port " + httpServer.getPort();
         ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
 
         return CompletableFuture.supplyAsync(() ->

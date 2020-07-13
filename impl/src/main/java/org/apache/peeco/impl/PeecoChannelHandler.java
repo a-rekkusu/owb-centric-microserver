@@ -16,13 +16,13 @@ import java.util.concurrent.CompletionStage;
 import org.apache.peeco.api.Request;
 import org.apache.peeco.api.Response;
 
-public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
+public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
 {
     private static final HttpDataFactory factory = new DefaultHttpDataFactory(16384L);
 
     private List<HttpHandlerInfo> httpHandlerInfos;
 
-    public HttpServerHandler(List<HttpHandlerInfo> httpHandlerInfos)
+    public PeecoChannelHandler(List<HttpHandlerInfo> httpHandlerInfos)
     {
         this.httpHandlerInfos = httpHandlerInfos;
     }
@@ -38,22 +38,25 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
     {
         if (msg instanceof HttpRequest)
         {
+            // TODO: start requestScoped
+            
             HttpRequest nettyRequest = (HttpRequest) msg;
             httpRequestLogger(nettyRequest);
 
-            HttpHandlerInfo info = HttpHandlerUtils.getMatchingHandler(nettyRequest, httpHandlerInfos);
+            HttpHandlerInfo info = PeecoUtils.getMatchingHandler(nettyRequest, httpHandlerInfos);
 
             if (info == null)
             {
                 throw new Exception("No matching HttpHandler found for incoming URI from Netty Request: " + nettyRequest.uri());
             }
 
-            Request request = new Request(HttpHandlerUtils.mapHttpMethod(nettyRequest.method()), nettyRequest.uri(), null);
+            Request request = new Request(PeecoUtils.mapHttpMethod(nettyRequest.method()), nettyRequest.uri(), null);
 
             parseHeaders(nettyRequest, request);
             parseQueryParams(nettyRequest, request);
             parseBodyParams(nettyRequest, request);
 
+            // TODO use Info.bean
             Object handlerParentBean = CDI.current().select(info.clazz).get();
 
             try
@@ -89,6 +92,8 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<HttpObject>
             {
                 throw new RuntimeException("Failed to create Netty Response from given HttpHandler Response object, Netty ChannelHandlerContext and Netty Request.");
             }
+            
+            // TODO stop requestScoped in finally block
         }
     }
 

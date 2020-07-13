@@ -2,13 +2,18 @@ package org.apache.peeco.impl;
 
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+import java.lang.reflect.Method;
 import org.apache.peeco.api.Matching;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletionStage;
+import org.apache.peeco.api.HttpHandler;
+import org.apache.peeco.api.Request;
+import org.apache.peeco.api.Response;
 
-public class HttpHandlerUtils
+public class PeecoUtils
 {
 
     public static org.apache.peeco.api.HttpMethod mapHttpMethod(HttpMethod method)
@@ -75,4 +80,43 @@ public class HttpHandlerUtils
 
         return matchings.isEmpty() ? null : matchings.get(0);
     }
+    
+    public static List<HttpHandlerInfo> collectInfos(Class clazz) throws RuntimeException
+    {
+        ArrayList<HttpHandlerInfo> infos = new ArrayList<>();
+
+        for (Method method : clazz.getDeclaredMethods())
+        {
+            if (method.isAnnotationPresent(HttpHandler.class))
+            {
+                Class type = method.getDeclaringClass();
+                HttpHandler annotation = method.getAnnotation(HttpHandler.class);
+                boolean isRequestInParameterTypes = false;
+
+                for (Class parameterType : method.getParameterTypes())
+                {
+                    if (parameterType.equals(Request.class))
+                    {
+                        isRequestInParameterTypes = true;
+                    }
+                }
+
+                if (annotation != null
+                        && (method.getReturnType() == Response.class || method.getReturnType() == CompletionStage.class)
+                        && isRequestInParameterTypes)
+                {
+                    infos.add(new HttpHandlerInfo(type, method, annotation));
+                }
+                else
+                {
+                    throw new RuntimeException("Invalid method signature: " + method + ". The return type of the annotated method must be " +
+                            Response.class.toString() + " or " + CompletionStage.class.toString() + "<Response>. The method signature must contain " +
+                            Request.class.toString() + ".");
+                }
+            }
+        }
+
+        return infos;
+    }
+
 }

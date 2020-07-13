@@ -1,5 +1,6 @@
 package org.apache.peeco.impl;
 
+import org.apache.peeco.impl.PeecoChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -9,13 +10,14 @@ import io.netty.handler.codec.http.HttpServerExpectContinueHandler;
 import io.netty.handler.ssl.SslContext;
 
 import java.util.List;
+import org.apache.peeco.impl.HttpHandlerInfo;
 
-public class HttpServerInitializer extends ChannelInitializer<SocketChannel>
+public class PeecoChannelInitializer extends ChannelInitializer<SocketChannel>
 {
     private final SslContext sslCtx;
     private List<HttpHandlerInfo> httpHandlerInfos;
 
-    public HttpServerInitializer(SslContext sslCtx, List<HttpHandlerInfo> httpHandlerInfos)
+    public PeecoChannelInitializer(SslContext sslCtx, List<HttpHandlerInfo> httpHandlerInfos)
     {
         this.sslCtx = sslCtx;
         this.httpHandlerInfos = httpHandlerInfos;
@@ -33,6 +35,6 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel>
         p.addLast(new HttpServerCodec());
         p.addLast(new HttpServerExpectContinueHandler());
         p.addLast("aggregator", new HttpObjectAggregator(Short.MAX_VALUE));
-        p.addLast(new HttpServerHandler(httpHandlerInfos));
+        p.addLast(new PeecoChannelHandler(httpHandlerInfos));
     }
 }

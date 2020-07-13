@@ -6,6 +6,7 @@ import org.apache.peeco.api.HttpHandler;
 public class HttpHandlerInfo
 {
     Class clazz;
+    Object bean;
     Method method;
     HttpHandler annotation;
 

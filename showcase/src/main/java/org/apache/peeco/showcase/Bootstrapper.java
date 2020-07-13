@@ -1,17 +1,16 @@
 package org.apache.peeco.showcase;
 
-import org.apache.peeco.impl.HttpServer;
+import javax.enterprise.inject.se.SeContainer;
+import javax.enterprise.inject.se.SeContainerInitializer;
 
 public class Bootstrapper
 {
     public static void main(String[] args) throws Exception
     {
-        HttpServer.Builder builder = new HttpServer.Builder();
-        builder.setHttpPort(9999);
-
-        try (final HttpServer server = new HttpServer(builder))
+        SeContainerInitializer initializer = SeContainerInitializer.newInstance();
+        try (SeContainer container = initializer.initialize())
         {
-            server.bootstrap();
+            
         }
     }
 }
