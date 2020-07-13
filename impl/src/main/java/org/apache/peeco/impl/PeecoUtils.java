@@ -1,14 +1,18 @@
 package org.apache.peeco.impl;
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.Match;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
+
 import java.lang.reflect.Method;
+
 import org.apache.peeco.api.Matching;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
+
 import org.apache.peeco.api.HttpHandler;
 import org.apache.peeco.api.Request;
 import org.apache.peeco.api.Response;
@@ -49,24 +53,13 @@ public class PeecoUtils
 
         for (HttpHandlerInfo info : infos)
         {
-            if (info.annotation.matching().equals(Matching.EXACT))
-            {
-                if (nettyRequest.uri().equals(info.annotation.url())
-                        && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
-                {
-                    matchings.add(info);
-                }
-            }
-            else if (info.annotation.matching().equals(Matching.WILDCARD))
-            {
-                String uri = info.annotation.url();
-                String url = uri.substring(0, uri.length() - 2);
+            String incomingUrl = nettyRequest.uri();
+            String handlerUrl = info.annotation.url();
 
-                if (uri.endsWith("/*") && nettyRequest.uri().startsWith(url)
-                        && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
-                {
-                    matchings.add(info);
-                }
+            if (isMatching(info.annotation.matching(), handlerUrl, incomingUrl)
+                    && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
+            {
+                matchings.add(info);
             }
         }
 
@@ -80,7 +73,44 @@ public class PeecoUtils
 
         return matchings.isEmpty() ? null : matchings.get(0);
     }
-    
+
+    public static boolean isMatching(Matching matching, String configuredUrl, String incomingUrl)
+    {
+        boolean matchingResult = false;
+        if (incomingUrl.contains("?"))
+        {
+            incomingUrl = incomingUrl.substring(0, incomingUrl.indexOf("?"));
+        }
+
+
+        if (matching == Matching.WILDCARD)
+        {
+            if (configuredUrl.startsWith("*"))
+            {
+                if (incomingUrl.endsWith(configuredUrl.substring(1)))
+                {
+                    matchingResult = true;
+                }
+            }
+            else if (configuredUrl.endsWith("*"))
+            {
+                if (incomingUrl.startsWith(configuredUrl.substring(0, configuredUrl.length() - 1)))
+                {
+                    matchingResult = true;
+                }
+            }
+        }
+        else if (matching == Matching.EXACT)
+        {
+            if (configuredUrl.equals(incomingUrl))
+            {
+                matchingResult = true;
+            }
+        }
+
+        return matchingResult;
+    }
+
     public static List<HttpHandlerInfo> collectInfos(Class clazz) throws RuntimeException
     {
         ArrayList<HttpHandlerInfo> infos = new ArrayList<>();

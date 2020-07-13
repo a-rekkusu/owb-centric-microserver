@@ -5,6 +5,9 @@ import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.*;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.control.ActivateRequestContext;
+import javax.enterprise.context.control.RequestContextController;
 import javax.enterprise.inject.spi.CDI;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,16 +18,20 @@ import java.util.concurrent.CompletionStage;
 
 import org.apache.peeco.api.Request;
 import org.apache.peeco.api.Response;
+import org.apache.webbeans.context.RequestContext;
 
 public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
 {
     private static final HttpDataFactory factory = new DefaultHttpDataFactory(16384L);
 
     private List<HttpHandlerInfo> httpHandlerInfos;
+    private RequestContextController requestContextController;
 
     public PeecoChannelHandler(List<HttpHandlerInfo> httpHandlerInfos)
     {
         this.httpHandlerInfos = httpHandlerInfos;
+        this.requestContextController = CDI.current().select(RequestContextController.class).get();
+
     }
 
     @Override
@@ -38,62 +45,65 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
     {
         if (msg instanceof HttpRequest)
         {
-            // TODO: start requestScoped
-            
-            HttpRequest nettyRequest = (HttpRequest) msg;
-            httpRequestLogger(nettyRequest);
-
-            HttpHandlerInfo info = PeecoUtils.getMatchingHandler(nettyRequest, httpHandlerInfos);
-
-            if (info == null)
-            {
-                throw new Exception("No matching HttpHandler found for incoming URI from Netty Request: " + nettyRequest.uri());
-            }
-
-            Request request = new Request(PeecoUtils.mapHttpMethod(nettyRequest.method()), nettyRequest.uri(), null);
-
-            parseHeaders(nettyRequest, request);
-            parseQueryParams(nettyRequest, request);
-            parseBodyParams(nettyRequest, request);
-
-            // TODO use Info.bean
-            Object handlerParentBean = CDI.current().select(info.clazz).get();
-
             try
             {
-                Object returnValue = info.method.invoke(handlerParentBean, request);
+                requestContextController.activate();
+                HttpRequest nettyRequest = (HttpRequest) msg;
+                httpRequestLogger(nettyRequest);
 
-                if (returnValue instanceof Response)
+                HttpHandlerInfo info = PeecoUtils.getMatchingHandler(nettyRequest, httpHandlerInfos);
+
+                if (info == null)
                 {
-                    Response response = (Response) returnValue;
-
-                    ctx.write(createNettyResponse(ctx, response, nettyRequest), ctx.voidPromise());
+                    throw new Exception("No matching HttpHandler found for incoming URI from Netty Request: " + nettyRequest.uri());
                 }
-                else if (returnValue instanceof CompletionStage)
-                {
-                    CompletionStage<Response> completionStageResponse = (CompletionStage<Response>) returnValue;
 
-                    completionStageResponse.thenAccept(response ->
+                Request request = new Request(PeecoUtils.mapHttpMethod(nettyRequest.method()), nettyRequest.uri(), null);
+
+                parseHeaders(nettyRequest, request);
+                parseQueryParams(nettyRequest, request);
+                parseBodyParams(nettyRequest, request);
+
+                Object handlerParentBean = info.bean;
+
+                try
+                {
+                    Object returnValue = info.method.invoke(handlerParentBean, request);
+
+                    if (returnValue instanceof Response)
                     {
-                        try
+                        Response response = (Response) returnValue;
+
+                        ctx.write(createNettyResponse(ctx, response, nettyRequest), ctx.voidPromise());
+                    }
+                    else if (returnValue instanceof CompletionStage)
+                    {
+                        CompletionStage<Response> completionStageResponse = (CompletionStage<Response>) returnValue;
+
+                        completionStageResponse.thenAccept(response ->
                         {
-                            ctx.write(createNettyResponse(ctx, response, nettyRequest))
-                                    .addListener((ChannelFutureListener) channelFuture ->
-                                            System.out.println(channelFuture.toString() + " IS DONE!"));
-                        }
-                        catch (IOException ex)
-                        {
-                            //redundant catch as it's caught in createNettyResponse() already, but IDE requires to catch it here again
-                        }
-                    });
+                            try
+                            {
+                                ctx.write(createNettyResponse(ctx, response, nettyRequest))
+                                        .addListener((ChannelFutureListener) channelFuture ->
+                                                System.out.println(channelFuture.toString() + " IS DONE!"));
+                            }
+                            catch (IOException ex)
+                            {
+                                //redundant catch as it's caught in createNettyResponse() already, but IDE requires to catch it here again
+                            }
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new RuntimeException("Failed to create Netty Response from given HttpHandler Response object, Netty ChannelHandlerContext and Netty Request.");
                 }
             }
-            catch (Exception ex)
+            finally
             {
-                throw new RuntimeException("Failed to create Netty Response from given HttpHandler Response object, Netty ChannelHandlerContext and Netty Request.");
+                requestContextController.deactivate();
             }
-            
-            // TODO stop requestScoped in finally block
         }
     }
 
@@ -147,24 +157,31 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
         if (nettyRequest.method().equals(HttpMethod.POST))
         {
             HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(factory, nettyRequest);
-            for (InterfaceHttpData data : decoder.getBodyHttpDatas())
+            try
             {
-                if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute)
+                for (InterfaceHttpData data : decoder.getBodyHttpDatas())
                 {
-                    Attribute attr = (Attribute) data;
-                    List<String> values = request.bodyParameters().computeIfAbsent(data.getName(), k -> new ArrayList<>());
+                    if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute)
+                    {
+                        Attribute attr = (Attribute) data;
+                        List<String> values = request.bodyParameters().computeIfAbsent(data.getName(), k -> new ArrayList<>());
 
-                    try
-                    {
-                        values.add(attr.getValue());
-                    }
-                    catch (IOException ex)
-                    {
-                        throw new RuntimeException("Failed to parse attribute values from Netty Request body to " + Request.class.toString());
+                        try
+                        {
+                            values.add(attr.getValue());
+                        }
+                        catch (IOException ex)
+                        {
+                            throw new RuntimeException("Failed to parse attribute values from Netty Request body to " + Request.class.toString());
+                        }
+
                     }
                 }
             }
-            decoder.destroy();
+            finally
+            {
+                decoder.destroy();
+            }
         }
     }
 

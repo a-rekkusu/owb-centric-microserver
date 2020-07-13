@@ -4,7 +4,6 @@ import org.apache.peeco.api.HttpHandler;
 import org.apache.peeco.api.Matching;
 import org.apache.peeco.api.*;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import java.io.ByteArrayInputStream;
 
@@ -13,12 +12,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import javax.inject.Inject;
 
-@ApplicationScoped
+@RequestScoped
 public class HelloWorldHandler
 {
     @Inject private HttpServer httpServer;
 
-    @HttpHandler(method = {HttpMethod.GET, HttpMethod.POST}, url = "/hello", matching = Matching.EXACT)
+    @HttpHandler(method = {HttpMethod.GET, HttpMethod.POST}, url = "/hello*", matching = Matching.WILDCARD)
     public CompletionStage<Response> apply(Request request)
     {
         String responseContent = "Hello World with CompletionStage from " + getClass().getName()

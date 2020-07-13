@@ -41,6 +41,10 @@ public class PeecoExtension implements Extension
     void afterDeploymentValidation(@Observes AfterDeploymentValidation adv, HttpServer httpServer) throws Exception
     {
         // TODO loop all infos, get instance and store in Info.bean
+        for (HttpHandlerInfo info : httpHandlerInfos)
+        {
+           info.bean = (CDI.current().select(info.clazz).get());
+        }
         
         System.out.println("----AFTER DEPLOYMENT VALIDATION----");
 
