@@ -156,9 +156,10 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
     {
         if (nettyRequest.method().equals(HttpMethod.POST))
         {
-            HttpPostRequestDecoder decoder = new HttpPostRequestDecoder(factory, nettyRequest);
+            HttpPostRequestDecoder decoder = null;
             try
             {
+                decoder = new HttpPostRequestDecoder(factory, nettyRequest);
                 for (InterfaceHttpData data : decoder.getBodyHttpDatas())
                 {
                     if (data.getHttpDataType() == InterfaceHttpData.HttpDataType.Attribute)
@@ -180,7 +181,10 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
             }
             finally
             {
-                decoder.destroy();
+                if (decoder != null)
+                {
+                    decoder.destroy();
+                }
             }
         }
     }
