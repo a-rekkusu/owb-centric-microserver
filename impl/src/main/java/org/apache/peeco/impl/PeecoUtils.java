@@ -100,8 +100,7 @@ public class PeecoUtils
             }
             else if (configuredUrl.endsWith("*"))
             {
-                configuredUrl = configuredUrl.substring(0, configuredUrl.length() - 1);
-                if (incomingUrl.startsWith(configuredUrl) && incomingUrl.substring(0, configuredUrl.length()).equals(configuredUrl))
+                if (incomingUrl.startsWith(configuredUrl.substring(0, configuredUrl.length() - 1)))
                 {
                     return true;
                 }
