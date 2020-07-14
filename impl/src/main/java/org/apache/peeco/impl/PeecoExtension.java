@@ -11,6 +11,9 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.peeco.api.HttpHandler;
 
 import javax.enterprise.event.Observes;
@@ -21,17 +24,18 @@ import org.apache.peeco.api.HttpServer;
 
 public class PeecoExtension implements Extension
 {
+    private static Logger logger = LogManager.getLogger();
     private List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
 
     <T> void processAnnotatedType(@Observes @WithAnnotations(HttpHandler.class) ProcessAnnotatedType<T> patEvent) throws Exception
     {
-        System.out.println("----PROCESS ANNOTATED TYPE----");
+        logger.log(Level.INFO, "----PROCESS ANNOTATED TYPE----");
 
         List<HttpHandlerInfo> infos = PeecoUtils.collectInfos(patEvent.getAnnotatedType().getJavaClass());
 
         for (HttpHandlerInfo info : infos)
         {
-            System.out.println("Valid HttpHandler found: Class: " + info.clazz +
+            logger.log(Level.INFO, "Valid HttpHandler found: Class: " + info.clazz +
                     ", Method: " + info.method +
                     ", Annotation: " + info.annotation.url() + ", " + Arrays.toString(info.annotation.method()) + ", " + info.annotation.matching());
         }
@@ -46,7 +50,7 @@ public class PeecoExtension implements Extension
             info.bean = (CDI.current().select(info.clazz).get());
         }
 
-        System.out.println("----AFTER DEPLOYMENT VALIDATION----");
+        logger.log(Level.INFO, "----AFTER DEPLOYMENT VALIDATION----");
 
         SslContext sslCtx = null;
         if (httpServer.isSsl())
@@ -70,7 +74,7 @@ public class PeecoExtension implements Extension
 
             //TODO set host in Configuration
 
-            System.err.println("Peeco started successfully on " + (httpServer.isSsl() ? "https" : "http") + "://127.0.0.1:" + httpServer.getPort() + '/');
+            logger.log(Level.INFO, "Peeco started successfully on " + (httpServer.isSsl() ? "https" : "http") + "://127.0.0.1:" + httpServer.getPort() + '/');
             ch.closeFuture().sync();
         }
         finally

@@ -14,12 +14,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.peeco.api.Request;
 import org.apache.peeco.api.Response;
 
 public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
 {
     private static final HttpDataFactory factory = new DefaultHttpDataFactory(16384L);
+    private static final Logger logger = LogManager.getLogger();
 
     private List<HttpHandlerInfo> httpHandlerInfos;
     private RequestContextController requestContextController;
@@ -46,11 +50,11 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
                 requestContextController.activate();
                 HttpRequest nettyRequest = (HttpRequest) msg;
 
-                System.out.println("Request received: URI: " + nettyRequest.uri() + "; HttpMethod: " + nettyRequest.method());
+                logger.log(Level.DEBUG, "Request received: HttpMethod: " + nettyRequest.method() + "; URI: " + nettyRequest.uri());
 
                 HttpHandlerInfo info = PeecoUtils.getMatchingHandler(nettyRequest, httpHandlerInfos);
 
-                System.out.println("Calling matching HttpHandler: " + info.annotation);
+                logger.log(Level.DEBUG, "Calling matching HttpHandler: " + info.annotation);
 
                 if (info == null)
                 {
@@ -85,7 +89,7 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
                             {
                                 ctx.write(createNettyResponse(ctx, response, nettyRequest))
                                         .addListener((ChannelFutureListener) channelFuture ->
-                                                System.out.println("CompletionStage<Response> is finished"));
+                                                logger.log(Level.DEBUG, "CompletionStage<Response> is finished"));
                             }
                             catch (IOException ex)
                             {
