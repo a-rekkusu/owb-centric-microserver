@@ -37,7 +37,7 @@ public class HelloWorldHandler
     @HttpHandler(method = {HttpMethod.GET}, url = "/hello2", matching = Matching.EXACT)
     public Response applyWithoutCompletionStage(Request request)
     {
-        String responseContent = "Hello World from " + getClass().getName();
+        String responseContent = "Hello World from " + getClass().getName() + "Request query Params: " + request.queryParameters();
         ByteArrayInputStream output = new ByteArrayInputStream(
                 responseContent.getBytes(StandardCharsets.UTF_8));
 
@@ -61,10 +61,49 @@ public class HelloWorldHandler
         return response;
     }
 
-    //test - method must not be discovered by processAnnotatedType
-    @RequestScoped
-    public void noHandlerAnnotation()
-    {
+    @HttpHandler(method = {HttpMethod.GET, HttpMethod.POST}, url = "/input", matching = Matching.EXACT)
+    public Response inputForm(Request request){
+        StringBuilder builder = new StringBuilder();
+        builder.append("<!DOCTYPE html>\r\n")
+                .append("<html><head><meta charset='utf-8' /><title>")
+                .append("Name Input Form")
+                .append("</title></head><body>\r\n")
+                .append("<form action=\"post\" method=\"POST\">\r\n")
+                .append("Enter your name: \r\n")
+                .append("<input type=\"text\" name=\"user\" />\r\n")
+                .append("<input type=\"submit\" value=\"Submit\" />\r\n")
+                .append("</form>\r\n")
+                .append("</body></html>\r\n");
 
+        String responseContent = builder.toString();
+        ByteArrayInputStream output = new ByteArrayInputStream(
+                responseContent.getBytes(StandardCharsets.UTF_8));
+
+        Response response = new Response(output);
+        response.addHeader("statusCode", "200");
+        response.addHeader("content-type", "text/html");
+
+        return response;
+    }
+
+    @HttpHandler(method = {HttpMethod.POST}, url = "/post", matching = Matching.EXACT)
+    public Response postRequest(Request request){
+        StringBuilder builder = new StringBuilder();
+        builder.append("<!DOCTYPE html>\r\n")
+                .append("<html><head><meta charset='utf-8' /><title>")
+                .append("Welcome title")
+                .append("</title></head><body>\r\n")
+                .append("Echo from Netty: welcome " + request.bodyParameters().get("user").get(0) + "!\r\n")
+                .append("</body></html>\r\n");
+
+        String responseContent = builder.toString();
+        ByteArrayInputStream output = new ByteArrayInputStream(
+                responseContent.getBytes(StandardCharsets.UTF_8));
+
+        Response response = new Response(output);
+        response.addHeader("statusCode", "200");
+        response.addHeader("content-type", "text/html");
+
+        return response;
     }
 }

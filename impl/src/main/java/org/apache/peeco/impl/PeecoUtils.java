@@ -7,9 +7,7 @@ import java.lang.reflect.Method;
 
 import org.apache.peeco.api.Matching;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletionStage;
 
 import org.apache.peeco.api.HttpHandler;
@@ -49,16 +47,33 @@ public class PeecoUtils
     public static HttpHandlerInfo getMatchingHandler(HttpRequest nettyRequest, List<HttpHandlerInfo> infos) throws RuntimeException
     {
         List<HttpHandlerInfo> matchings = new ArrayList<>();
+        String incomingUrl = nettyRequest.uri();
 
         for (HttpHandlerInfo info : infos)
         {
-            String incomingUrl = nettyRequest.uri();
             String handlerUrl = info.annotation.url();
 
-            if (isMatching(info.annotation.matching(), handlerUrl, incomingUrl)
-                    && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
+            if (info.annotation.matching() == Matching.EXACT)
             {
-                matchings.add(info);
+                if (isMatching(info.annotation.matching(), handlerUrl, incomingUrl)
+                        && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
+                {
+                    matchings.add(info);
+                }
+            }
+        }
+
+        for (HttpHandlerInfo info : infos)
+        {
+            String handlerUrl = info.annotation.url();
+
+            if (info.annotation.matching() == Matching.WILDCARD && matchings.size() == 0)
+            {
+                if (isMatching(info.annotation.matching(), handlerUrl, incomingUrl)
+                        && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
+                {
+                    matchings.add(info);
+                }
             }
         }
 
@@ -73,39 +88,37 @@ public class PeecoUtils
 
     public static boolean isMatching(Matching matching, String configuredUrl, String incomingUrl)
     {
-        boolean matchingResult = false;
+        //cut off query parameters
         if (incomingUrl.contains("?"))
         {
             incomingUrl = incomingUrl.substring(0, incomingUrl.indexOf("?"));
         }
 
-
-        if (matching == Matching.WILDCARD)
+        if (matching == Matching.EXACT)
+        {
+            if (configuredUrl.equals(incomingUrl))
+            {
+                return true;
+            }
+        }
+        else if (matching == Matching.WILDCARD)
         {
             if (configuredUrl.startsWith("*"))
             {
                 if (incomingUrl.endsWith(configuredUrl.substring(1)))
                 {
-                    matchingResult = true;
+                    return true;
                 }
             }
             else if (configuredUrl.endsWith("*"))
             {
                 if (incomingUrl.startsWith(configuredUrl.substring(0, configuredUrl.length() - 1)))
                 {
-                    matchingResult = true;
+                    return true;
                 }
             }
         }
-        else if (matching == Matching.EXACT)
-        {
-            if (configuredUrl.equals(incomingUrl))
-            {
-                matchingResult = true;
-            }
-        }
-
-        return matchingResult;
+        return false;
     }
 
     public static List<HttpHandlerInfo> collectInfos(Class clazz) throws RuntimeException

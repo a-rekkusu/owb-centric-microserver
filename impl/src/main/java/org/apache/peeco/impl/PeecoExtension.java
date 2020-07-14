@@ -16,6 +16,7 @@ import org.apache.peeco.api.HttpHandler;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.*;
 import java.util.*;
+
 import org.apache.peeco.api.HttpServer;
 
 public class PeecoExtension implements Extension
@@ -42,9 +43,9 @@ public class PeecoExtension implements Extension
     {
         for (HttpHandlerInfo info : httpHandlerInfos)
         {
-           info.bean = (CDI.current().select(info.clazz).get());
+            info.bean = (CDI.current().select(info.clazz).get());
         }
-        
+
         System.out.println("----AFTER DEPLOYMENT VALIDATION----");
 
         SslContext sslCtx = null;
@@ -69,7 +70,7 @@ public class PeecoExtension implements Extension
 
             //TODO set host in Configuration
 
-            System.err.println("Open your web browser and navigate to " + (httpServer.isSsl() ? "https" : "http") + "://127.0.0.1:" + httpServer.getPort() + '/');
+            System.err.println("Peeco started successfully on " + (httpServer.isSsl() ? "https" : "http") + "://127.0.0.1:" + httpServer.getPort() + '/');
             ch.closeFuture().sync();
         }
         finally

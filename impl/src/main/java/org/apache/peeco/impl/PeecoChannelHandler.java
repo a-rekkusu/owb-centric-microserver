@@ -5,8 +5,6 @@ import io.netty.channel.*;
 import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.multipart.*;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.context.control.ActivateRequestContext;
 import javax.enterprise.context.control.RequestContextController;
 import javax.enterprise.inject.spi.CDI;
 import java.io.IOException;
@@ -18,7 +16,6 @@ import java.util.concurrent.CompletionStage;
 
 import org.apache.peeco.api.Request;
 import org.apache.peeco.api.Response;
-import org.apache.webbeans.context.RequestContext;
 
 public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
 {
@@ -31,7 +28,6 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
     {
         this.httpHandlerInfos = httpHandlerInfos;
         this.requestContextController = CDI.current().select(RequestContextController.class).get();
-
     }
 
     @Override
@@ -49,9 +45,12 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
             {
                 requestContextController.activate();
                 HttpRequest nettyRequest = (HttpRequest) msg;
-                httpRequestLogger(nettyRequest);
+
+                System.out.println("Request received: URI: " + nettyRequest.uri() + "; HttpMethod: " + nettyRequest.method());
 
                 HttpHandlerInfo info = PeecoUtils.getMatchingHandler(nettyRequest, httpHandlerInfos);
+
+                System.out.println("Calling matching HttpHandler: " + info.annotation);
 
                 if (info == null)
                 {
@@ -86,7 +85,7 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
                             {
                                 ctx.write(createNettyResponse(ctx, response, nettyRequest))
                                         .addListener((ChannelFutureListener) channelFuture ->
-                                                System.out.println(channelFuture.toString() + " IS DONE!"));
+                                                System.out.println("CompletionStage<Response> is finished"));
                             }
                             catch (IOException ex)
                             {
@@ -175,7 +174,6 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
                         {
                             throw new RuntimeException("Failed to parse attribute values from Netty Request body to " + Request.class.toString());
                         }
-
                     }
                 }
             }
@@ -202,15 +200,5 @@ public class PeecoChannelHandler extends SimpleChannelInboundHandler<HttpObject>
                 values.add(value);
             }
         }
-    }
-
-
-    public void httpRequestLogger(HttpRequest req)
-    {
-        System.out.println("Request received:");
-        System.out.println("HTTP Method: " + req.method());
-        System.out.println("URI: " + req.uri());
-        System.out.println("HTTP Version: " + req.protocolVersion());
-        System.out.println("Headers: " + req.headers());
     }
 }

@@ -1,6 +1,5 @@
 package org.apache.peeco.impl;
 
-import org.apache.peeco.impl.PeecoChannelHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -10,7 +9,6 @@ import io.netty.handler.codec.http.HttpServerExpectContinueHandler;
 import io.netty.handler.ssl.SslContext;
 
 import java.util.List;
-import org.apache.peeco.impl.HttpHandlerInfo;
 
 public class PeecoChannelInitializer extends ChannelInitializer<SocketChannel>
 {
