@@ -9,6 +9,7 @@ public class PeecoUtilsTest
     public void testGetMatchingHandlerWildcard()
     {
         Assert.assertTrue(PeecoUtils.isMatching(Matching.WILDCARD, "/hello3/*", "/hello3/id=2342"));
+        Assert.assertTrue(PeecoUtils.isMatching(Matching.WILDCARD, "/hello/*", "/hello/world/?lang=en-en"));
         Assert.assertTrue(PeecoUtils.isMatching(Matching.WILDCARD, "/hello/*", "/hello/?lang=de-de"));
         Assert.assertTrue(PeecoUtils.isMatching(Matching.WILDCARD, "/hello3/world/*", "/hello3/world/?id=2342"));
         Assert.assertTrue(PeecoUtils.isMatching(Matching.WILDCARD, "/hello/world*", "/hello/world/?lang=de-de"));

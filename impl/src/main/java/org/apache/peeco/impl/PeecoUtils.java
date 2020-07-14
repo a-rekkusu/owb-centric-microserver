@@ -47,33 +47,21 @@ public class PeecoUtils
     public static HttpHandlerInfo getMatchingHandler(HttpRequest nettyRequest, List<HttpHandlerInfo> infos) throws RuntimeException
     {
         List<HttpHandlerInfo> matchings = new ArrayList<>();
-        String incomingUrl = nettyRequest.uri();
 
         for (HttpHandlerInfo info : infos)
         {
             String handlerUrl = info.annotation.url();
+            String incomingUrl = nettyRequest.uri();
 
-            if (info.annotation.matching() == Matching.EXACT)
+            if (isMatching(info.annotation.matching(), handlerUrl, incomingUrl)
+                    && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
             {
-                if (isMatching(info.annotation.matching(), handlerUrl, incomingUrl)
-                        && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
+                if (info.annotation.matching() == Matching.EXACT)
                 {
-                    matchings.add(info);
+                    return info;
                 }
-            }
-        }
 
-        for (HttpHandlerInfo info : infos)
-        {
-            String handlerUrl = info.annotation.url();
-
-            if (info.annotation.matching() == Matching.WILDCARD && matchings.size() == 0)
-            {
-                if (isMatching(info.annotation.matching(), handlerUrl, incomingUrl)
-                        && Arrays.asList(info.annotation.method()).contains(mapHttpMethod(nettyRequest.method())))
-                {
-                    matchings.add(info);
-                }
+                matchings.add(info);
             }
         }
 
@@ -112,7 +100,8 @@ public class PeecoUtils
             }
             else if (configuredUrl.endsWith("*"))
             {
-                if (incomingUrl.startsWith(configuredUrl.substring(0, configuredUrl.length() - 1)))
+                configuredUrl = configuredUrl.substring(0, configuredUrl.length() - 1);
+                if (incomingUrl.startsWith(configuredUrl) && incomingUrl.substring(0, configuredUrl.length()).equals(configuredUrl))
                 {
                     return true;
                 }
@@ -155,6 +144,10 @@ public class PeecoUtils
                 }
             }
         }
+
+        //Matching.EXACT should be first in the list
+        Comparator<HttpHandlerInfo> infoMatchingComparator = Comparator.comparing((HttpHandlerInfo info) -> info.annotation.matching());
+        infos.sort(infoMatchingComparator);
 
         return infos;
     }

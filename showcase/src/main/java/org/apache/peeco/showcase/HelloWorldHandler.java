@@ -17,10 +17,10 @@ public class HelloWorldHandler
 {
     @Inject private HttpServer httpServer;
 
-    @HttpHandler(method = {HttpMethod.GET, HttpMethod.POST}, url = "/hello*", matching = Matching.WILDCARD)
+    @HttpHandler(method = {HttpMethod.GET, HttpMethod.POST}, url = "/hello/*", matching = Matching.WILDCARD)
     public CompletionStage<Response> apply(Request request)
     {
-        String responseContent = "Hello World with CompletionStage from " + getClass().getName()
+        String responseContent = "Responding to /hello/* : Hello World with CompletionStage from " + getClass().getName()
                 + " on " + httpServer.getHost() + " and port " + httpServer.getPort();
         ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
 
@@ -37,7 +37,7 @@ public class HelloWorldHandler
     @HttpHandler(method = {HttpMethod.GET}, url = "/hello2", matching = Matching.EXACT)
     public Response applyWithoutCompletionStage(Request request)
     {
-        String responseContent = "Hello World from " + getClass().getName() + "Request query Params: " + request.queryParameters();
+        String responseContent = "Responding to /hello2 : Hello World from " + getClass().getName() + "Request query Params: " + request.queryParameters();
         ByteArrayInputStream output = new ByteArrayInputStream(
                 responseContent.getBytes(StandardCharsets.UTF_8));
 
@@ -50,7 +50,7 @@ public class HelloWorldHandler
 
     @HttpHandler(method = {HttpMethod.GET}, url = "/hello3/*", matching = Matching.WILDCARD)
     public Response applyWithWildcardMatching(Request request){
-        String responseContent = "Hello with Wildcard URL from " + getClass().getName();
+        String responseContent = "Responding to /hello3/* : Hello with Wildcard URL from " + getClass().getName();
         ByteArrayInputStream output = new ByteArrayInputStream(
                 responseContent.getBytes(StandardCharsets.UTF_8));
 
