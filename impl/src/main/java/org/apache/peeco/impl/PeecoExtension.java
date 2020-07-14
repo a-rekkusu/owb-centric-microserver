@@ -24,7 +24,7 @@ import org.apache.peeco.api.HttpServer;
 
 public class PeecoExtension implements Extension
 {
-    private static Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger();
     private List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
 
     <T> void processAnnotatedType(@Observes @WithAnnotations(HttpHandler.class) ProcessAnnotatedType<T> patEvent) throws Exception
