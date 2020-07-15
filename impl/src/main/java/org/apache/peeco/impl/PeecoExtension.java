@@ -70,16 +70,17 @@ public class PeecoExtension implements Extension
                     .channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new PeecoChannelInitializer(sslCtx, httpHandlerInfos));
-            Channel ch = b.bind(httpServer.getConfiguredPort()).sync().channel();
+            Channel ch = b.bind(httpServer.getPort()).sync().channel();
 
             String[] localAddressSplitted = ch.localAddress().toString().split(":");
             String port = localAddressSplitted[localAddressSplitted.length - 1];
-            httpServer.setRuntimePort(Integer.parseInt(port));
+            System.out.println(port);
+            httpServer.setPort(Integer.parseInt(port));
 
             //TODO set host in Configuration
 
             logger.log(Level.INFO, "Peeco started successfully on " + (httpServer.isSsl() ? "https" : "http") +
-                    "://127.0.0.1:" + httpServer.getRuntimePort() + '/');
+                    "://127.0.0.1:" + httpServer.getPort() + '/');
             ch.closeFuture().sync();
 
         }

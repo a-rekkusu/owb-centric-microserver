@@ -3,25 +3,10 @@ package org.apache.peeco.api;
 public class HttpServer
 {
 
-    private int configuredPort;
-    private int runtimePort;
+
+    private int port;
     private boolean ssl;
     private String host;
-
-    public int getRuntimePort()
-    {
-        return runtimePort;
-    }
-
-    public void setRuntimePort(int runtimePort)
-    {
-        //must only be set once from impl
-        this.runtimePort = this.runtimePort == 0 ? runtimePort : throw_();
-    }
-
-    public int throw_(){
-        throw new RuntimeException("runtimePort is already set to " + this.runtimePort);
-    }
 
     protected HttpServer()
     {
@@ -29,14 +14,19 @@ public class HttpServer
 
     private HttpServer(Builder builder)
     {
-        this.configuredPort = builder.port;
+        this.port = builder.port;
         this.ssl = builder.ssl;
         this.host = builder.host;
     }
 
-    public int getConfiguredPort()
+    public void setPort(int port)
     {
-        return configuredPort;
+        this.port = this.port == 0 ? port : this.port;
+    }
+
+    public int getPort()
+    {
+        return port;
     }
 
     public boolean isSsl()

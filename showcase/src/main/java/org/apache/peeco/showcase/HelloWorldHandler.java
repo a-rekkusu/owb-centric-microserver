@@ -21,7 +21,7 @@ public class HelloWorldHandler
     public CompletionStage<Response> apply(Request request)
     {
         String responseContent = "Responding to /hello/* : Hello World with CompletionStage from " + getClass().getName()
-                + " on " + httpServer.getHost() + " and port " + httpServer.getRuntimePort();
+                + " on " + httpServer.getHost() + " and port " + httpServer.getPort();
         ByteArrayInputStream output = new ByteArrayInputStream(responseContent.getBytes(StandardCharsets.UTF_8));
 
         return CompletableFuture.supplyAsync(() ->
