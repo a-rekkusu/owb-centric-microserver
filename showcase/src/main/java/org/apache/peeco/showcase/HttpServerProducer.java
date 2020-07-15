@@ -12,7 +12,7 @@ public class HttpServerProducer
     public HttpServer init()
     {
         return new HttpServer.Builder()
-                .port(8080)
+                .port(0)
                 .ssl(false)
                 .host("localhost")
                 .build();
