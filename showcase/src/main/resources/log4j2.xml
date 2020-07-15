@@ -6,12 +6,6 @@
         </Console>
     </Appenders>
     <Loggers>
-        <Logger name="org.apache.peeco.impl.PeecoExtension" level="info" additivity="false">
-            <AppenderRef ref="Console"/>
-        </Logger>
-        <Logger name="org.apache.peeco.impl.PeecoChannelHandler" level="debug" additivity="false">
-            <AppenderRef ref="Console"/>
-        </Logger>
         <Root level="warn">
             <AppenderRef ref="Console"/>
         </Root>
