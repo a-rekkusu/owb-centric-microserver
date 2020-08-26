@@ -1,0 +1,12 @@
+{
+  "resources":[
+    {"pattern":"\\QMETA-INF/beans.xml\\E"}, 
+    {"pattern":"\\QMETA-INF/openwebbeans/openwebbeans.properties\\E"}, 
+    {"pattern":"\\QMETA-INF/services/javax.enterprise.inject.se.SeContainerInitializer\\E"}, 
+    {"pattern":"\\QMETA-INF/services/jdk.vm.ci.hotspot.HotSpotJVMCIBackendFactory\\E"}, 
+    {"pattern":"\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/api/HttpServer$$OwbNormalScopeProxy0.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/showcase/HttpServerProducer.class\\E"}
+  ],
+  "bundles":[{"name":"openwebbeans/Messages"}]
+}

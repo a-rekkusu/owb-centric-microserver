@@ -25,10 +25,22 @@ import org.apache.peeco.api.HttpServer;
 public class PeecoExtension implements Extension
 {
     private static final Logger logger = LogManager.getLogger();
+    private static boolean enabled = true;
+
     private List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
+
+    public static void disable()
+    {
+        enabled = false;
+    }
 
     <T> void processAnnotatedType(@Observes @WithAnnotations(HttpHandler.class) ProcessAnnotatedType<T> patEvent) throws Exception
     {
+        if (!enabled)
+        {
+            return;
+        }
+
         logger.log(Level.INFO, "----PROCESS ANNOTATED TYPE----");
 
         List<HttpHandlerInfo> infos = PeecoUtils.collectInfos(patEvent.getAnnotatedType().getJavaClass());
@@ -45,9 +57,14 @@ public class PeecoExtension implements Extension
 
     void afterDeploymentValidation(@Observes AfterDeploymentValidation adv, HttpServer httpServer) throws Exception
     {
+        if (!enabled)
+        {
+            return;
+        }
+
         for (HttpHandlerInfo info : httpHandlerInfos)
         {
-            info.bean = (CDI.current().select(info.clazz).get());
+            info.bean = CDI.current().select(info.clazz).get();
         }
 
         logger.log(Level.INFO, "----AFTER DEPLOYMENT VALIDATION----");

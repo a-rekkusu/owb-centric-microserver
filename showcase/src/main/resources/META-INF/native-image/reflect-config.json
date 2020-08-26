@@ -1,0 +1,166 @@
+[
+  {
+    "name": "org.apache.logging.log4j.message.DefaultFlowMessageFactory",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.logging.log4j.spi.AbstractLogger",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.logging.log4j.core.impl.Log4jContextFactory",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "io.netty.channel.ChannelHandler$Sharable"
+  },
+  {
+    "name": "io.netty.util.internal.SuppressJava6Requirement"
+  },
+  {
+    "name": "java.lang.Deprecated"
+  },
+  {
+    "name": "java.lang.Object",
+    "allDeclaredMethods": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "java.lang.annotation.Documented"
+  },
+  {
+    "name": "java.lang.annotation.Inherited"
+  },
+  {
+    "name": "java.lang.annotation.Retention"
+  },
+  {
+    "name": "java.lang.annotation.Target"
+  },
+  {
+    "name": "javax.enterprise.context.control.RequestContextController",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.peeco.api.HttpServer",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.peeco.api.HttpServer$$OwbNormalScopeProxy0",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.peeco.showcase.Bootstrapper",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.peeco.showcase.HelloWorldHandler",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.peeco.showcase.HelloWorldHandler$$OwbNormalScopeProxy0",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.peeco.showcase.HttpServerProducer",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.peeco.showcase.HttpServerProducer$$OwbNormalScopeProxy0",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.peeco.showcase.proxyGeneration.ProxyGenerator",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.webbeans.conversation.ConversationImpl",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.webbeans.conversation.ConversationImpl$$OwbNormalScopeProxy0",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.webbeans.corespi.se.StandaloneContextsService",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.webbeans.config.WebBeansContext"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.webbeans.inject.impl.InjectionPointImpl"
+  },
+  {
+    "name": "org.apache.webbeans.lifecycle.StandaloneLifeCycle",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": []
+      }
+    ]
+  },
+  {
+    "name": "org.apache.webbeans.service.ClassLoaderProxyService$LoadFirst",
+    "methods": [
+      {
+        "name": "<init>",
+        "parameterTypes": [
+          "org.apache.webbeans.config.WebBeansContext"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "org.apache.webbeans.spi.BeanArchiveService"
+  },
+  {
+    "name": "org.apache.webbeans.spi.LoaderService"
+  },
+  {
+    "name": "org.apache.webbeans.spi.ScannerService"
+  }
+]
