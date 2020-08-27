@@ -1,166 +1,363 @@
 [
-  {
-    "name": "org.apache.logging.log4j.message.DefaultFlowMessageFactory",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.logging.log4j.spi.AbstractLogger",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.logging.log4j.core.impl.Log4jContextFactory",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "io.netty.channel.ChannelHandler$Sharable"
-  },
-  {
-    "name": "io.netty.util.internal.SuppressJava6Requirement"
-  },
-  {
-    "name": "java.lang.Deprecated"
-  },
-  {
-    "name": "java.lang.Object",
-    "allDeclaredMethods": true,
-    "allPublicMethods": true
-  },
-  {
-    "name": "java.lang.annotation.Documented"
-  },
-  {
-    "name": "java.lang.annotation.Inherited"
-  },
-  {
-    "name": "java.lang.annotation.Retention"
-  },
-  {
-    "name": "java.lang.annotation.Target"
-  },
-  {
-    "name": "javax.enterprise.context.control.RequestContextController",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.peeco.api.HttpServer",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.peeco.api.HttpServer$$OwbNormalScopeProxy0",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.peeco.showcase.Bootstrapper",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.peeco.showcase.HelloWorldHandler",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.peeco.showcase.HelloWorldHandler$$OwbNormalScopeProxy0",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.peeco.showcase.HttpServerProducer",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.peeco.showcase.HttpServerProducer$$OwbNormalScopeProxy0",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.peeco.showcase.proxyGeneration.ProxyGenerator",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.webbeans.conversation.ConversationImpl",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.webbeans.conversation.ConversationImpl$$OwbNormalScopeProxy0",
-    "allDeclaredFields": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredConstructors": true
-  },
-  {
-    "name": "org.apache.webbeans.corespi.se.StandaloneContextsService",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "org.apache.webbeans.config.WebBeansContext"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "org.apache.webbeans.inject.impl.InjectionPointImpl"
-  },
-  {
-    "name": "org.apache.webbeans.lifecycle.StandaloneLifeCycle",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "org.apache.webbeans.service.ClassLoaderProxyService$LoadFirst",
-    "methods": [
-      {
-        "name": "<init>",
-        "parameterTypes": [
-          "org.apache.webbeans.config.WebBeansContext"
-        ]
-      }
-    ]
-  },
-  {
-    "name": "org.apache.webbeans.spi.BeanArchiveService"
-  },
-  {
-    "name": "org.apache.webbeans.spi.LoaderService"
-  },
-  {
-    "name": "org.apache.webbeans.spi.ScannerService"
-  }
+{
+  "name":"io.netty.bootstrap.ServerBootstrap$ServerBootstrapAcceptor",
+  "methods":[
+    {"name":"channelRead","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object"] }, 
+    {"name":"exceptionCaught","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Throwable"] }
+  ]
+},
+{
+  "name":"io.netty.buffer.AbstractByteBufAllocator",
+  "allDeclaredMethods":true
+},
+{
+  "name":"io.netty.channel.ChannelDuplexHandler",
+  "methods":[{"name":"read","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }]
+},
+{
+  "name":"io.netty.channel.ChannelHandler$Sharable"
+},
+{
+  "name":"io.netty.channel.ChannelHandlerAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"io.netty.channel.ChannelInboundHandlerAdapter",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
+  "methods":[
+    {"name":"channelActive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelInactive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelRead","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object"] }, 
+    {"name":"channelReadComplete","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelRegistered","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelUnregistered","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelWritabilityChanged","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"userEventTriggered","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object"] }
+  ]
+},
+{
+  "name":"io.netty.channel.ChannelInitializer",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true,
+  "methods":[
+    {"name":"channelRegistered","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"exceptionCaught","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Throwable"] }
+  ]
+},
+{
+  "name":"io.netty.channel.DefaultChannelPipeline$HeadContext",
+  "methods":[
+    {"name":"bind","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.net.SocketAddress","io.netty.channel.ChannelPromise"] }, 
+    {"name":"channelActive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelInactive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelRead","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object"] }, 
+    {"name":"channelReadComplete","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelRegistered","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelUnregistered","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelWritabilityChanged","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"close","parameterTypes":["io.netty.channel.ChannelHandlerContext","io.netty.channel.ChannelPromise"] }, 
+    {"name":"connect","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.net.SocketAddress","java.net.SocketAddress","io.netty.channel.ChannelPromise"] }, 
+    {"name":"deregister","parameterTypes":["io.netty.channel.ChannelHandlerContext","io.netty.channel.ChannelPromise"] }, 
+    {"name":"disconnect","parameterTypes":["io.netty.channel.ChannelHandlerContext","io.netty.channel.ChannelPromise"] }, 
+    {"name":"exceptionCaught","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Throwable"] }, 
+    {"name":"flush","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"read","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"userEventTriggered","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object"] }, 
+    {"name":"write","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object","io.netty.channel.ChannelPromise"] }
+  ]
+},
+{
+  "name":"io.netty.channel.DefaultChannelPipeline$TailContext",
+  "methods":[
+    {"name":"channelActive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelInactive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelRead","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object"] }, 
+    {"name":"channelReadComplete","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelRegistered","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelUnregistered","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelWritabilityChanged","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"exceptionCaught","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Throwable"] }, 
+    {"name":"userEventTriggered","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object"] }
+  ]
+},
+{
+  "name":"io.netty.channel.SimpleChannelInboundHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"io.netty.channel.socket.nio.NioServerSocketChannel",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"io.netty.handler.logging.LoggingHandler",
+  "methods":[
+    {"name":"bind","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.net.SocketAddress","io.netty.channel.ChannelPromise"] }, 
+    {"name":"channelActive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelInactive","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelRead","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object"] }, 
+    {"name":"channelReadComplete","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelRegistered","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelUnregistered","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"channelWritabilityChanged","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"close","parameterTypes":["io.netty.channel.ChannelHandlerContext","io.netty.channel.ChannelPromise"] }, 
+    {"name":"connect","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.net.SocketAddress","java.net.SocketAddress","io.netty.channel.ChannelPromise"] }, 
+    {"name":"deregister","parameterTypes":["io.netty.channel.ChannelHandlerContext","io.netty.channel.ChannelPromise"] }, 
+    {"name":"disconnect","parameterTypes":["io.netty.channel.ChannelHandlerContext","io.netty.channel.ChannelPromise"] }, 
+    {"name":"exceptionCaught","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Throwable"] }, 
+    {"name":"flush","parameterTypes":["io.netty.channel.ChannelHandlerContext"] }, 
+    {"name":"userEventTriggered","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object"] }, 
+    {"name":"write","parameterTypes":["io.netty.channel.ChannelHandlerContext","java.lang.Object","io.netty.channel.ChannelPromise"] }
+  ]
+},
+{
+  "name":"io.netty.util.internal.SuppressJava6Requirement"
+},
+{
+  "name":"io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueColdProducerFields",
+  "fields":[{"name":"producerLimit", "allowUnsafeAccess":true}]
+},
+{
+  "name":"io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueConsumerFields",
+  "fields":[{"name":"consumerIndex", "allowUnsafeAccess":true}]
+},
+{
+  "name":"io.netty.util.internal.shaded.org.jctools.queues.BaseMpscLinkedArrayQueueProducerFields",
+  "fields":[{"name":"producerIndex", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.lang.Deprecated"
+},
+{
+  "name":"java.lang.Object",
+  "allDeclaredMethods":true,
+  "allPublicMethods":true
+},
+{
+  "name":"java.lang.annotation.Documented"
+},
+{
+  "name":"java.lang.annotation.Inherited"
+},
+{
+  "name":"java.lang.annotation.Retention"
+},
+{
+  "name":"java.lang.annotation.Target"
+},
+{
+  "name":"java.lang.management.ManagementFactory",
+  "methods":[{"name":"getRuntimeMXBean","parameterTypes":[] }]
+},
+{
+  "name":"java.lang.management.RuntimeMXBean",
+  "methods":[{"name":"getName","parameterTypes":[] }]
+},
+{
+  "name":"java.nio.Bits",
+  "methods":[{"name":"unaligned","parameterTypes":[] }]
+},
+{
+  "name":"java.nio.Buffer",
+  "fields":[{"name":"address", "allowUnsafeAccess":true}]
+},
+{
+  "name":"java.nio.DirectByteBuffer",
+  "fields":[{"name":"cleaner", "allowUnsafeAccess":true}],
+  "methods":[{"name":"<init>","parameterTypes":["long","int"] }]
+},
+{
+  "name":"java.security.Principal",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"javax.enterprise.context.control.RequestContextController",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"javax.enterprise.inject.spi.InterceptionFactory",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"javax.enterprise.inject.spi.WithAnnotations",
+  "methods":[{"name":"value","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.peeco.api.HttpServer",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.peeco.api.HttpServer$$OwbNormalScopeProxy0",
+  "fields":[{"name":"owbContextualInstanceProvider"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.peeco.impl.HttpHandlerInfo",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.peeco.impl.PeecoChannelHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.peeco.impl.PeecoChannelInitializer",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.peeco.impl.PeecoExtension",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.peeco.impl.PeecoUtils",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.peeco.showcase.Bootstrapper",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.peeco.showcase.HelloWorldHandler",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.peeco.showcase.HelloWorldHandler$$OwbNormalScopeProxy0",
+  "fields":[{"name":"owbContextualInstanceProvider"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.peeco.showcase.HttpServerProducer",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.peeco.showcase.HttpServerProducer$$OwbNormalScopeProxy0",
+  "fields":[{"name":"owbContextualInstanceProvider"}],
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.peeco.showcase.proxyGeneration.ProxyGenerator",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.webbeans.conversation.ConversationImpl",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.webbeans.corespi.se.StandaloneContextsService",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.webbeans.config.WebBeansContext"] }]
+},
+{
+  "name":"org.apache.webbeans.event.EventImpl",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.webbeans.inject.impl.InjectionPointImpl",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.webbeans.inject.instance.InstanceImpl",
+  "allDeclaredFields":true,
+  "allDeclaredMethods":true,
+  "allPublicMethods":true,
+  "allDeclaredConstructors":true
+},
+{
+  "name":"org.apache.webbeans.intercept.ApplicationScopedBeanInterceptorHandler",
+  "methods":[{"name":"<init>","parameterTypes":["javax.enterprise.inject.spi.BeanManager","javax.enterprise.inject.spi.Bean"] }]
+},
+{
+  "name":"org.apache.webbeans.intercept.RequestScopedBeanInterceptorHandler",
+  "methods":[{"name":"<init>","parameterTypes":["javax.enterprise.inject.spi.BeanManager","javax.enterprise.inject.spi.Bean"] }]
+},
+{
+  "name":"org.apache.webbeans.lifecycle.StandaloneLifeCycle",
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.apache.webbeans.service.ClassLoaderProxyService$LoadFirst",
+  "methods":[{"name":"<init>","parameterTypes":["org.apache.webbeans.config.WebBeansContext"] }]
+},
+{
+  "name":"org.apache.webbeans.spi.BeanArchiveService"
+},
+{
+  "name":"org.apache.webbeans.spi.LoaderService"
+},
+{
+  "name":"org.apache.webbeans.spi.ScannerService"
+},
+{
+  "name":"sun.misc.Cleaner",
+  "methods":[{"name":"clean","parameterTypes":[] }]
+},
+{
+  "name":"sun.misc.Unsafe",
+  "fields":[{"name":"theUnsafe"}],
+  "methods":[
+    {"name":"copyMemory","parameterTypes":["java.lang.Object","long","java.lang.Object","long","long"] }, 
+    {"name":"getAndAddLong","parameterTypes":["java.lang.Object","long","long"] }, 
+    {"name":"getAndSetObject","parameterTypes":["java.lang.Object","long","java.lang.Object"] }
+  ]
+},
+{
+  "name":"sun.misc.VM",
+  "methods":[{"name":"maxDirectMemory","parameterTypes":[] }]
+},
+{
+  "name":"sun.nio.ch.SelectorImpl",
+  "fields":[
+    {"name":"publicSelectedKeys"}, 
+    {"name":"selectedKeys"}
+  ]
+}
 ]

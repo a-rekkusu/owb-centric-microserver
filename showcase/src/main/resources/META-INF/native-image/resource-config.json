@@ -3,10 +3,24 @@
     {"pattern":"\\QMETA-INF/beans.xml\\E"}, 
     {"pattern":"\\QMETA-INF/openwebbeans/openwebbeans.properties\\E"}, 
     {"pattern":"\\QMETA-INF/services/javax.enterprise.inject.se.SeContainerInitializer\\E"}, 
+    {"pattern":"\\QMETA-INF/services/javax.enterprise.inject.spi.CDIProvider\\E"}, 
+    {"pattern":"\\QMETA-INF/services/javax.enterprise.inject.spi.Extension\\E"}, 
     {"pattern":"\\QMETA-INF/services/jdk.vm.ci.hotspot.HotSpotJVMCIBackendFactory\\E"}, 
     {"pattern":"\\QMETA-INF/services/jdk.vm.ci.services.JVMCIServiceLocator\\E"}, 
-    {"pattern":"\\Qorg/apache/peeco/api/HttpServer$$OwbNormalScopeProxy0.class\\E"}, 
-    {"pattern":"\\Qorg/apache/peeco/showcase/HttpServerProducer.class\\E"}
+    {"pattern":"\\Qorg/apache/peeco/api/HttpServer.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/impl/HttpHandlerInfo.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/impl/PeecoChannelHandler.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/impl/PeecoChannelInitializer.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/impl/PeecoExtension.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/impl/PeecoUtils.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/showcase/Bootstrapper.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/showcase/HelloWorldHandler.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/showcase/HttpServerProducer.class\\E"}, 
+    {"pattern":"\\Qorg/apache/peeco/showcase/proxyGeneration/ProxyGenerator.class\\E"},
+    {"pattern":"\\Qorg/apache/peeco/showcase/HelloWorldHandler$$OwbNormalScopeProxy0.class\\E"},
+    {"pattern":"\\Qorg/apache/peeco/api/HttpServer$$OwbNormalScopeProxy0.class\\E"},
+    {"pattern":"\\Qorg/apache/peeco/showcase/HttpServerProducer$$OwbNormalScopeProxy0.class\\E"},
+    {"pattern":"\\Qorg/apache/webbeans/conversation/ConversationImpl$$OwbNormalScopeProxy0.class\\E"}
   ],
   "bundles":[{"name":"openwebbeans/Messages"}]
 }

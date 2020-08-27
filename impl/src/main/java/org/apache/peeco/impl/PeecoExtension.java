@@ -11,9 +11,8 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.peeco.api.HttpHandler;
 
 import javax.enterprise.event.Observes;
@@ -24,7 +23,8 @@ import org.apache.peeco.api.HttpServer;
 
 public class PeecoExtension implements Extension
 {
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = Logger.getLogger(PeecoExtension.class.getName());
+    private static final LoggingHandler loggingHandler = new LoggingHandler(LogLevel.DEBUG);
     private static boolean enabled = true;
 
     private List<HttpHandlerInfo> httpHandlerInfos = new ArrayList<>();
@@ -85,7 +85,7 @@ public class PeecoExtension implements Extension
             b.option(ChannelOption.SO_BACKLOG, 1024);
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
-                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .handler(loggingHandler)
                     .childHandler(new PeecoChannelInitializer(sslCtx, httpHandlerInfos));
             Channel ch = b.bind(httpServer.getPort()).sync().channel();
 

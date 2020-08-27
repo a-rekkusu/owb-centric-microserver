@@ -25,6 +25,7 @@ public class ProxyGenerator
     {
         try
         {
+            PeecoExtension.disable();
             final SeContainer container = SeContainerInitializer.newInstance()
                     .addProperty(DefiningClassService.class.getName(), ClassLoaderProxyService.Spy.class.getName()) // no unsafe usage
                     .addProperty("org.apache.webbeans.proxy.useStaticNames", "true") // a bit unsafe but otherwise no way to get pregenerated proxies
